@@ -1,5 +1,4 @@
-import { Box } from '@chakra-ui/react'
-import { Label } from './Label'
+import { Box, FormLabel } from '@chakra-ui/react'
 import { Required } from './Required'
 
 export const FormGroup = ({
@@ -13,8 +12,10 @@ export const FormGroup = ({
 }) => {
   return (
     <Box className="mb-6">
-      <Label>{label}</Label>
-      {required && <Required />}
+      <FormLabel>
+        {label}
+        {required && <Required />}
+      </FormLabel>
       {children}
     </Box>
   )
