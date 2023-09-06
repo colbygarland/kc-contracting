@@ -1,7 +1,6 @@
-import { createUser, loginUser } from '@/auth'
+import { createUser } from '@/auth'
 import { Layout } from '@/components/auth/Layout'
 import { FormGroup } from '@/components/forms/FormGroup'
-import { CONSTANTS } from '@/constants'
 import { Input } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -38,7 +37,7 @@ export default function CreateAccount() {
 
   return (
     <Layout
-      title={CONSTANTS.APP_NAME}
+      title="Create Account"
       submitButtonText="Create Account"
       handleSubmit={handleSubmit}
       footerLink={<Link href="/auth/login">Login</Link>}
