@@ -1,11 +1,13 @@
 import { Box, Button, Container, Stack } from '@chakra-ui/react'
 import { H1 } from '../Headings'
+import { Loader } from '../Loader'
 
 interface LayoutProps {
   title: string
   handleSubmit: any
   submitButtonText: string
   footerLink: React.ReactNode
+  loading: boolean
   children: React.ReactNode
 }
 export const Layout = ({
@@ -13,6 +15,7 @@ export const Layout = ({
   handleSubmit,
   submitButtonText,
   footerLink,
+  loading,
   children,
 }: LayoutProps) => {
   return (
@@ -35,6 +38,7 @@ export const Layout = ({
           </Box>
         </Stack>
       </Container>
+      {loading && <Loader />}
     </Box>
   )
 }

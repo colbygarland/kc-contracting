@@ -1,5 +1,4 @@
 import { createUser, loginUser } from '@/auth'
-import { loginErrorCodes } from '@/auth/errorCodes'
 import { Layout } from '@/components/auth/Layout'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { CONSTANTS } from '@/constants'
@@ -14,6 +13,7 @@ export default function CreateAccount() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -25,7 +25,9 @@ export default function CreateAccount() {
       return
     }
 
+    setLoading(true)
     const { user, error } = await createUser(email, password)
+    setLoading(false)
     if (user) {
       router.replace('/')
     } else {
@@ -40,6 +42,7 @@ export default function CreateAccount() {
       submitButtonText="Create Account"
       handleSubmit={handleSubmit}
       footerLink={<Link href="/auth/login">Login</Link>}
+      loading={loading}
     >
       {error && (
         <div className="bg-red-100 text-red-600 p-3 rounded shadow">

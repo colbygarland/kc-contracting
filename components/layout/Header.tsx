@@ -58,7 +58,7 @@ const Menu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
           </MenuItem>
         </DrawerBody>
         <DrawerFooter>
-          <Button as="a" href="/logout" colorScheme="cyan">
+          <Button as="a" href="/auth/logout" colorScheme="cyan">
             Logout
           </Button>
         </DrawerFooter>

@@ -1,9 +1,13 @@
+import { set } from '@/utils/persist'
 import {
   getAuth,
   createUserWithEmailAndPassword,
   User,
   signInWithEmailAndPassword,
 } from 'firebase/auth'
+
+// List of routes a user is allowed to see unauthorized
+export const unauthorizedRoutes = ['/auth/create-account', '/auth/login']
 
 export const createUser = async (
   email: string,
@@ -15,6 +19,7 @@ export const createUser = async (
   const auth = getAuth()
   try {
     const resp = await createUserWithEmailAndPassword(auth, email, password)
+    set('user', resp.user)
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {
     console.error(
@@ -34,6 +39,7 @@ export const loginUser = async (
   const auth = getAuth()
   try {
     const resp = await signInWithEmailAndPassword(auth, email, password)
+    set('user', resp.user)
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {
     console.error(
