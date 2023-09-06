@@ -2,11 +2,11 @@ import { loginUser } from '@/auth'
 import { loginErrorCodes } from '@/auth/errorCodes'
 import { Layout } from '@/components/auth/Layout'
 import { FormGroup } from '@/components/forms/FormGroup'
-import { CONSTANTS } from '@/constants'
+import { get } from '@/utils/persist'
 import { Input } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Login() {
   const router = useRouter()
@@ -14,6 +14,13 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    const user = get('user')
+    if (user) {
+      router.replace('/')
+    }
+  }, [router])
 
   const handleSubmit = async (e: any) => {
     e.preventDefault()
@@ -37,7 +44,7 @@ export default function Login() {
 
   return (
     <Layout
-      title={CONSTANTS.APP_NAME}
+      title="Log In"
       submitButtonText="Sign in"
       handleSubmit={handleSubmit}
       footerLink={<Link href="/auth/create-account">Create account</Link>}
