@@ -6,6 +6,7 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from 'firebase/auth'
+import { store } from '../store/store'
 
 // List of routes a user is allowed to see unauthorized
 export const unauthorizedRoutes = ['/auth/create-account', '/auth/login']
@@ -24,6 +25,7 @@ export const createUser = async (
     await updateProfile(resp.user, {
       displayName: name,
     })
+    store.user.set(resp.user)
     set('user', resp.user)
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {
@@ -44,6 +46,7 @@ export const loginUser = async (
   const auth = getAuth()
   try {
     const resp = await signInWithEmailAndPassword(auth, email, password)
+    store.user.set(resp.user)
     set('user', resp.user)
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {

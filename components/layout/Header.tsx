@@ -1,4 +1,6 @@
 import { CONSTANTS } from '@/constants'
+import { store } from '@/src/store/store'
+import { getInitials } from '@/src/utils/strings'
 import {
   Box,
   Button,
@@ -11,14 +13,23 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  Input,
   Link,
   Text,
   useDisclosure,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from '@chakra-ui/react'
-import { FaBars, FaClock, FaHouseChimney, FaNewspaper } from 'react-icons/fa6'
+import {
+  FaBars,
+  FaChevronDown,
+  FaClock,
+  FaHouseChimney,
+  FaNewspaper,
+} from 'react-icons/fa6'
 
-const MenuItem = ({
+const AppMenuItem = ({
   to,
   icon,
   children,
@@ -39,7 +50,7 @@ const MenuItem = ({
   )
 }
 
-const Menu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
+const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
   return (
     <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
       <DrawerOverlay />
@@ -47,23 +58,50 @@ const Menu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
         <DrawerCloseButton />
         <DrawerHeader fontSize="3xl">Menu</DrawerHeader>
         <DrawerBody>
-          <MenuItem to="/" icon={<FaHouseChimney />}>
+          <AppMenuItem to="/" icon={<FaHouseChimney />}>
             Home
-          </MenuItem>
-          <MenuItem to="/enter-hours" icon={<FaClock />}>
-            Hours
-          </MenuItem>
-          <MenuItem to="/reports" icon={<FaNewspaper />}>
-            Reports
-          </MenuItem>
+          </AppMenuItem>
+          <AppMenuItem to="/enter-hours" icon={<FaClock />}>
+            Daily Time Ticket
+          </AppMenuItem>
+          <AppMenuItem to="/reports" icon={<FaNewspaper />}>
+            Safety Sheets
+          </AppMenuItem>
+          <AppMenuItem to="/reports" icon={<FaNewspaper />}>
+            Equipment List
+          </AppMenuItem>
+          <AppMenuItem to="/reports" icon={<FaNewspaper />}>
+            Truck List
+          </AppMenuItem>
+          <AppMenuItem to="/reports" icon={<FaNewspaper />}>
+            Permits
+          </AppMenuItem>
         </DrawerBody>
-        <DrawerFooter>
-          <Button as="a" href="/auth/logout" colorScheme="cyan">
-            Logout
-          </Button>
-        </DrawerFooter>
       </DrawerContent>
     </Drawer>
+  )
+}
+
+const UserButton = () => {
+  const { user } = store
+  const initials = getInitials(user.displayName.use())
+
+  return (
+    <Menu>
+      <MenuButton as={Button} rightIcon={<FaChevronDown />}>
+        {initials}
+      </MenuButton>
+      <MenuList color="black">
+        <MenuItem>
+          <Link className="block" href="/profile">
+            Employee Info
+          </Link>
+        </MenuItem>
+        <MenuItem>
+          <Link href="/auth/logout">Logout</Link>
+        </MenuItem>
+      </MenuList>
+    </Menu>
   )
 }
 
@@ -75,7 +113,6 @@ export const Header = () => {
       <Box bg="cyan.600" color="white" py={4}>
         <Container>
           <Flex justifyContent="space-between" alignItems="center">
-            <Text fontWeight="bold">{CONSTANTS.APP_NAME}</Text>
             {/* @ts-ignore */}
             <Button
               onClick={onOpen}
@@ -85,10 +122,12 @@ export const Header = () => {
             >
               <FaBars className="text-white text-2xl" />
             </Button>
+            <Text fontWeight="bold">{CONSTANTS.APP_NAME}</Text>
+            <UserButton />
           </Flex>
         </Container>
       </Box>
-      <Menu onClose={onClose} isOpen={isOpen} />
+      <AppMenu onClose={onClose} isOpen={isOpen} />
     </>
   )
 }
