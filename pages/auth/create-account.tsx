@@ -73,6 +73,7 @@ export default function CreateAccount() {
           name="password"
           required
           onChange={e => setPassword(e.target.value)}
+          minLength={8}
         />
       </FormGroup>
       <FormGroup label="Confirm Password" required>
@@ -81,6 +82,7 @@ export default function CreateAccount() {
           name="confirm_password"
           required
           onChange={e => setConfirmPassword(e.target.value)}
+          minLength={8}
         />
       </FormGroup>
     </Layout>
