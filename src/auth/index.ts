@@ -1,4 +1,4 @@
-import { set } from '@/utils/persist'
+import { set } from '@/src/utils/persist'
 import {
   getAuth,
   createUserWithEmailAndPassword,

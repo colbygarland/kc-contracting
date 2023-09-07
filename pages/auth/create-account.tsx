@@ -1,4 +1,4 @@
-import { createUser } from '@/auth'
+import { createUser } from '@/src/auth'
 import { Layout } from '@/components/auth/Layout'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { Input } from '@chakra-ui/react'
