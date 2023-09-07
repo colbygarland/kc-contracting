@@ -1,7 +1,8 @@
 import { get } from '@/src/utils/persist'
+import { User } from 'firebase/auth'
 import { useEffect, useState } from 'react'
 
-export const useUser = () => {
+export const useUser = (): User | null => {
   const [user, setUser] = useState(null)
 
   useEffect(() => {

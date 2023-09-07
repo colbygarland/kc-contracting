@@ -1,6 +1,6 @@
 import { Loader } from '@/components/Loader'
 import { Page } from '@/components/layout/Page'
-import { useUser } from '@/src/hooks/useUser'
+import { useUser } from '@/src/hooks/useUser/useUser'
 
 export default function Index() {
   const user = useUser()
