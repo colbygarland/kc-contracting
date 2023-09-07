@@ -1,5 +1,5 @@
 import { initFirebase } from '@/firebase'
-import { useAuthentication } from '@/hooks/useAuthentication'
+import { useAuthentication } from '@/src/hooks/useAuthentication'
 import '@/styles/globals.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'

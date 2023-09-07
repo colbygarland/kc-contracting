@@ -1,4 +1,4 @@
-import { get } from '@/utils/persist'
+import { get } from '@/src/utils/persist'
 import { useEffect, useState } from 'react'
 
 export const useUser = () => {

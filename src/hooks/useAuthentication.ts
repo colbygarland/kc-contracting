@@ -1,5 +1,5 @@
-import { unauthorizedRoutes } from '@/auth'
-import { get } from '@/utils/persist'
+import { unauthorizedRoutes } from '@/src/auth'
+import { get } from '@/src/utils/persist'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
