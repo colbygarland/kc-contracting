@@ -9,5 +9,5 @@ export default function Index() {
     return <Loader />
   }
 
-  return <Page title="Dashboard">todo</Page>
+  return <Page title="Dashboard">Welcome, {user.displayName}</Page>
 }

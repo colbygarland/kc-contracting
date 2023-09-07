@@ -8,6 +8,7 @@ import { useState } from 'react'
 
 export default function CreateAccount() {
   const router = useRouter()
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -25,7 +26,7 @@ export default function CreateAccount() {
     }
 
     setLoading(true)
-    const { user, error } = await createUser(email, password)
+    const { user, error } = await createUser(email, password, name)
     setLoading(false)
     if (user) {
       router.replace('/')
@@ -50,6 +51,14 @@ export default function CreateAccount() {
         </div>
       )}
 
+      <FormGroup label="Full Name" required>
+        <Input
+          type="text"
+          name="name"
+          required
+          onChange={e => setName(e.target.value)}
+        />
+      </FormGroup>
       <FormGroup label="Email" required>
         <Input
           type="email"

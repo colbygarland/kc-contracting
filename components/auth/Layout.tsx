@@ -30,7 +30,9 @@ export const Layout = ({
               <Stack spacing="6">
                 <Stack spacing="5">{children}</Stack>
                 <Stack spacing="6">
-                  <Button type="submit">{submitButtonText}</Button>
+                  <Button type="submit" colorScheme="blue">
+                    {submitButtonText}
+                  </Button>
                   <Box className="text-center">{footerLink}</Box>
                 </Stack>
               </Stack>
