@@ -5,4 +5,6 @@ interface Store {
   user: User | null
 }
 
-export const store = observable<Store>({ user: null })
+export const store = observable<Store>({
+  user: null,
+})

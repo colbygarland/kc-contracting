@@ -1,5 +1,5 @@
 import { CONSTANTS } from '@/constants'
-import { useUser } from '@/src/hooks/useUser/useUser'
+import { isAdmin } from '@/src/auth/roles'
 import { store } from '@/src/store/store'
 import { getInitials } from '@/src/utils/strings'
 import {
@@ -15,7 +15,6 @@ import {
   DrawerOverlay,
   Flex,
   Input,
-  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,6 +22,7 @@ import {
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 import {
   FaBars,
   FaChevronDown,
@@ -41,7 +41,7 @@ const AppMenuItem = ({
   children: string
 }) => {
   return (
-    <Text fontSize="xl" fontWeight="bold" mb={6}>
+    <Text fontSize="lg" fontWeight="bold" mb={4}>
       <Link href={to}>
         <Flex alignItems="center" gap={2}>
           {icon && icon}
@@ -67,6 +67,14 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
           <AppMenuItem to="#">Truck List</AppMenuItem>
           <AppMenuItem to="#">Permits</AppMenuItem>
           <AppMenuItem to="/profile">Employee Info</AppMenuItem>
+          {isAdmin() && (
+            <>
+              <div className="bg-slate-100 h-1 mb-4" />
+              <AppMenuItem to="/enter-equipment">Enter Equipment</AppMenuItem>
+              <AppMenuItem to="#">Enter Company</AppMenuItem>
+              <AppMenuItem to="#">Employees</AppMenuItem>
+            </>
+          )}
         </DrawerBody>
       </DrawerContent>
     </Drawer>

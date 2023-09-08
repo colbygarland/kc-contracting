@@ -38,6 +38,17 @@ const EQUIPMENT_TO_REPLACE_BY_API_CALL = [
   },
 ]
 
+const TRAILER_TO_REPLACE_BY_API_CALL = [
+  {
+    id: 'frgfhfgh',
+    name: 'Snowmobile',
+  },
+  {
+    id: 'werwerewr',
+    name: 'Flat deck',
+  },
+]
+
 const CHARGE_TO = ['PO #', 'LSD', 'Job #']
 
 export default function EnterHours() {
@@ -105,20 +116,33 @@ export default function EnterHours() {
             ))}
           </Select>
         </FormGroup>
+        <FormGroup label="Trailer">
+          <Select name="trailer" placeholder="Select trailer">
+            {TRAILER_TO_REPLACE_BY_API_CALL.map(trailer => (
+              <option value={trailer.id} key={trailer.id}>
+                {trailer.name}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
+        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+          <FormGroup label="Labour Hours" required>
+            <Input type="number" name="labour_hours" required />
+          </FormGroup>
+          <FormGroup label="Equipment Hours">
+            <Input type="number" name="equipment_hours" />
+          </FormGroup>
+          <FormGroup label="Travel Time">
+            <Input type="number" name="travel_time" />
+          </FormGroup>
+        </Grid>
         <FormGroup label="Description">
           <Textarea name="description" />
         </FormGroup>
-        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
-          <FormGroup label="Hours Worked" required>
-            <Input type="number" name="hours_worked" required />
-          </FormGroup>
-          <FormGroup label="Travel Hours">
-            <Input type="number" name="travel_hours" />
-          </FormGroup>
-          <Button colorScheme="cyan" type="submit">
-            Submit Ticket
-          </Button>
-        </Grid>
+
+        <Button colorScheme="cyan" type="submit">
+          Submit Ticket
+        </Button>
       </form>
     </Page>
   )
