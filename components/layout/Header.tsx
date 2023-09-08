@@ -10,11 +10,9 @@ import {
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
   Flex,
-  Input,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,13 +21,8 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import Link from 'next/link'
-import {
-  FaBars,
-  FaChevronDown,
-  FaClock,
-  FaHouseChimney,
-  FaNewspaper,
-} from 'react-icons/fa6'
+import { useRouter } from 'next/router'
+import { FaBars } from 'react-icons/fa6'
 
 const AppMenuItem = ({
   to,
@@ -40,12 +33,20 @@ const AppMenuItem = ({
   icon?: React.ReactNode
   children: string
 }) => {
+  const router = useRouter()
+  const isCurrentPage = router.asPath === to
+  const styles = isCurrentPage
+    ? 'text-sky-500 font-normal'
+    : 'text-slate-500 font-normal hover:text-sky-400 transition duration-100'
+
   return (
     <Text fontSize="lg" fontWeight="bold" mb={4}>
       <Link href={to}>
         <Flex alignItems="center" gap={2}>
-          {icon && icon}
-          {children}
+          <span className={styles}>
+            {icon && icon}
+            {children}
+          </span>
         </Flex>
       </Link>
     </Text>
@@ -58,7 +59,9 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader fontSize="3xl">Menu</DrawerHeader>
+        <DrawerHeader>
+          <span className="text-slate-300 text-sm">MENU</span>
+        </DrawerHeader>
         <DrawerBody>
           <AppMenuItem to="/">Home</AppMenuItem>
           <AppMenuItem to="/daily-time-ticket">Daily Time Ticket</AppMenuItem>
@@ -87,9 +90,7 @@ const UserButton = () => {
 
   return (
     <Menu>
-      <MenuButton as={Button} rightIcon={<FaChevronDown />}>
-        {initials}
-      </MenuButton>
+      <MenuButton as={Button}>{initials}</MenuButton>
       <MenuList color="black">
         <MenuItem>
           <Link className="block" href="/profile">
@@ -104,12 +105,12 @@ const UserButton = () => {
   )
 }
 
-export const Header = () => {
+const MobileMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
-    <>
-      <Box bg="cyan.600" color="white" py={4}>
+    <div className="lg:hidden">
+      <div className="py-4 border-b-slate-200 border-b">
         <Container>
           <Flex justifyContent="space-between" alignItems="center">
             {/* @ts-ignore */}
@@ -119,14 +120,31 @@ export const Header = () => {
               colorScheme="blue"
               _hover={{}}
             >
-              <FaBars className="text-white text-2xl" />
+              <FaBars className="text-slate-600 text-2xl" />
             </Button>
             <Text fontWeight="bold">{CONSTANTS.APP_NAME}</Text>
             <UserButton />
           </Flex>
         </Container>
-      </Box>
+      </div>
       <AppMenu onClose={onClose} isOpen={isOpen} />
+    </div>
+  )
+}
+
+const DesktopMenu = () => {
+  return (
+    <div className="hidden lg:block fixed top-0 left-0 h-screen w-64 bg-slate-50 border-r border-r-slate-200">
+      <div className="w-md "></div>
+    </div>
+  )
+}
+
+export const Header = () => {
+  return (
+    <>
+      <MobileMenu />
+      <DesktopMenu />
     </>
   )
 }
