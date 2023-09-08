@@ -16,12 +16,9 @@ export const Page = ({
   }
 
   return (
-    <main>
-      <Header />
-      <Container py={6}>
-        <H1>{title}</H1>
-        {children}
-      </Container>
+    <main className="lg:mt-16">
+      <Header title={title} />
+      <div className="lg:ml-64 p-6 lg:p-8">{children}</div>
     </main>
   )
 }
