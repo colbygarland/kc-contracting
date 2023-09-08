@@ -18,7 +18,6 @@ export const useAuthentication = () => {
       router.replace('/auth/login')
     } else {
       if (store.user.get() === null) {
-        console.log('setting the store')
         store.user.set(user)
       }
     }

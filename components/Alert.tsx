@@ -3,13 +3,14 @@ export const Alert = ({
   title,
   message,
 }: {
-  type: 'success' | 'danger'
+  type: 'success' | 'danger' | 'warning'
   title: string
   message: string
 }) => {
   const styles = {
-    danger: 'bg-red-100 text-red-600 p-3 rounded shadow',
-    success: 'bg-emerald-100 text-emerald-600 p-3 rounded shadow',
+    danger: 'bg-red-100 text-red-600 p-3 rounded shadow max-w-sm',
+    success: 'bg-emerald-100 text-emerald-600 p-3 rounded shadow max-w-sm',
+    warning: 'bg-amber-100 text-amber-600 p-3 rounded shadow max-w-sm',
   }[type]
 
   return (
