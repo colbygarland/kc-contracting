@@ -59,17 +59,17 @@ const MenuItems = () => {
     <>
       <AppMenuItem to="/">Home</AppMenuItem>
       <AppMenuItem to="/daily-time-ticket">Daily Time Ticket</AppMenuItem>
-      <AppMenuItem to="#">Safety Sheet</AppMenuItem>
-      <AppMenuItem to="#">Equipment List</AppMenuItem>
-      <AppMenuItem to="#">Truck List</AppMenuItem>
-      <AppMenuItem to="#">Permits</AppMenuItem>
-      <AppMenuItem to="/profile">Employee Info</AppMenuItem>
+      <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
+      <AppMenuItem to="/equipment">Equipment List</AppMenuItem>
+      <AppMenuItem to="/trucks-trailers">Truck List</AppMenuItem>
+      <AppMenuItem to="/permits">Permits</AppMenuItem>
+      <AppMenuItem to="/employee-info">Employee Info</AppMenuItem>
       {isAdmin() && (
         <>
           <div className="bg-slate-100 h-1 mb-4" />
-          <AppMenuItem to="/enter-equipment">Enter Equipment</AppMenuItem>
-          <AppMenuItem to="#">Enter Company</AppMenuItem>
-          <AppMenuItem to="#">Employees</AppMenuItem>
+          <AppMenuItem to="/admin/enter-equipment">Enter Equipment</AppMenuItem>
+          <AppMenuItem to="/admin/enter-company">Enter Company</AppMenuItem>
+          <AppMenuItem to="/admin/employees">Employees</AppMenuItem>
         </>
       )}
     </>
@@ -102,7 +102,7 @@ const UserButton = () => {
       <MenuButton as={Button}>{initials}</MenuButton>
       <MenuList color="black">
         <MenuItem>
-          <Link className="block" href="/profile">
+          <Link className="block" href="/employee-info">
             Employee Info
           </Link>
         </MenuItem>
