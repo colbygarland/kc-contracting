@@ -1,7 +1,7 @@
 import { H1 } from '@/components/Headings'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { Required } from '@/components/forms/Required'
-import { Header } from '@/components/layout/Header'
+import { Page } from '@/components/layout/Page'
 import {
   Box,
   Button,
@@ -21,11 +21,9 @@ const user = {
 
 export default function EnterHours() {
   return (
-    <main>
-      <Header />
+    <Page title="Daily Time Ticket">
       <Container className="py-6">
         <Box className="mb-6">
-          <H1>Daily Time Ticket</H1>
           <Text>
             <Required /> indicates required fields.
           </Text>
@@ -70,6 +68,6 @@ export default function EnterHours() {
           </Grid>
         </form>
       </Container>
-    </main>
+    </Page>
   )
 }
