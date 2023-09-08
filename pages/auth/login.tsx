@@ -3,10 +3,11 @@ import { loginErrorCodes } from '@/src/auth/errorCodes'
 import { Layout } from '@/components/auth/Layout'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { get } from '@/src/utils/persist'
-import { Input } from '@chakra-ui/react'
+import { Grid, Input } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { Alert } from '@/components/Alert'
 
 export default function Login() {
   const router = useRouter()
@@ -22,7 +23,7 @@ export default function Login() {
     }
   }, [router])
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     setError('')
@@ -47,14 +48,16 @@ export default function Login() {
       title="Log In"
       submitButtonText="Sign in"
       handleSubmit={handleSubmit}
-      footerLink={<Link href="/auth/create-account">Create account</Link>}
+      footerLink={
+        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+          <Link href="/auth/reset-password">Reset password</Link>
+          <Link href="/auth/create-account">Create account</Link>
+        </Grid>
+      }
       loading={loading}
     >
       {error && (
-        <div className="bg-red-100 text-red-600 p-3 rounded shadow">
-          <p className="font-bold">Something went wrong.</p>
-          <p className="text-sm">{error}</p>
-        </div>
+        <Alert title="Something went wrong." message={error} type="danger" />
       )}
 
       <FormGroup label="Email" required>
