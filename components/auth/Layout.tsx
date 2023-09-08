@@ -6,7 +6,7 @@ interface LayoutProps {
   title: string
   handleSubmit: any
   submitButtonText: string
-  footerLink: React.ReactNode
+  footerLink?: React.ReactNode
   loading: boolean
   children: React.ReactNode
 }
@@ -33,7 +33,9 @@ export const Layout = ({
                   <Button type="submit" colorScheme="blue">
                     {submitButtonText}
                   </Button>
-                  <Box className="text-center">{footerLink}</Box>
+                  {footerLink && (
+                    <Box className="text-center">{footerLink}</Box>
+                  )}
                 </Stack>
               </Stack>
             </form>

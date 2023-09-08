@@ -5,10 +5,15 @@ import {
   User,
   signInWithEmailAndPassword,
   updateProfile,
+  sendPasswordResetEmail,
 } from 'firebase/auth'
 
 // List of routes a user is allowed to see unauthorized
-export const unauthorizedRoutes = ['/auth/create-account', '/auth/login']
+export const unauthorizedRoutes = [
+  '/auth/create-account',
+  '/auth/login',
+  '/auth/reset-password',
+]
 
 export const createUser = async (
   email: string,
@@ -51,5 +56,16 @@ export const loginUser = async (
       `Error signing in user. Error code: ${error.code}. Error message: ${error.message}`,
     )
     return { user: null, error }
+  }
+}
+
+export const resetPassword = async (email: string) => {
+  const auth = getAuth()
+  try {
+    await sendPasswordResetEmail(auth, email)
+  } catch (error: any) {
+    console.error(
+      `Error resetting passsword. Error code: ${error.code}. Error message: ${error.message}`,
+    )
   }
 }

@@ -6,13 +6,13 @@ export const FormGroup = ({
   required,
   children,
 }: {
-  label: string
+  label?: string
   required?: boolean
   children: React.ReactNode
 }) => {
   return (
     <Box className="mb-6">
-      <FormLabel>
+      <FormLabel minHeight="24px">
         {label}
         {required && <Required />}
       </FormLabel>
