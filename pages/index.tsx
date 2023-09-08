@@ -14,6 +14,7 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 import {
   MdAssignmentAdd,
   MdAssignmentReturn,
@@ -47,36 +48,48 @@ export default function Index() {
             <Table variant="simple">
               <Thead>
                 <Tr>
+                  <Th></Th>
                   <Th>Date</Th>
                   <Th>Company</Th>
                   <Th>Location</Th>
-                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>
                 <Tr>
+                  <Td>
+                    <Link href="/daily-time-ticket?id=fsdffgfdhhrew">
+                      <Button>
+                        <MdEditDocument />
+                      </Button>
+                    </Link>
+                  </Td>
                   <Td>2023-09-08</Td>
                   <Td>Birchcliff</Td>
                   <Td>23-23-566-1</Td>
-                  <Td>
-                    <Button>Edit</Button>
-                  </Td>
                 </Tr>
                 <Tr>
-                  <Td>2023-09-08</Td>
-                  <Td>CNRL</Td>
-                  <Td>23-23-566-1</Td>
                   <Td>
-                    <Button>Edit</Button>
+                    <Link href="/daily-time-ticket?id=fsdffgfdhhrew">
+                      <Button>
+                        <MdEditDocument />
+                      </Button>
+                    </Link>
                   </Td>
-                </Tr>
-                <Tr>
                   <Td>2023-09-08</Td>
                   <Td>Birchcliff</Td>
                   <Td>23-23-566-1</Td>
+                </Tr>
+                <Tr>
                   <Td>
-                    <Button>Edit</Button>
+                    <Link href="/daily-time-ticket?id=fsdffgfdhhrew">
+                      <Button>
+                        <MdEditDocument />
+                      </Button>
+                    </Link>
                   </Td>
+                  <Td>2023-09-08</Td>
+                  <Td>Birchcliff</Td>
+                  <Td>23-23-566-1</Td>
                 </Tr>
               </Tbody>
             </Table>
@@ -115,6 +128,9 @@ export default function Index() {
           <div className="grid grid-cols-2 gap-6 pb-6 mb-6 border-b-2 border-b-slate-50">
             <Button>
               <MdSupervisorAccount className="mr-2" /> Employee Info
+            </Button>
+            <Button>
+              <MdSupervisorAccount className="mr-2" /> Practice Ticket
             </Button>
           </div>
         </div>

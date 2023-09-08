@@ -14,6 +14,7 @@ import {
   Text,
   Textarea,
 } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import { ChangeEvent, useRef, useState } from 'react'
 
 const COMPANIES_TO_REPLACE_BY_API_CALL = [
@@ -54,9 +55,14 @@ const CHARGE_TO = ['PO #', 'LSD', 'Job #']
 export default function EnterHours() {
   const { user } = store
   const today = getCurrentDate()
+  const router = useRouter()
 
   const [chargeTo, setChargeTo] = useState(CHARGE_TO[0])
   const [chargeToRef, setInputFocus] = useFocus()
+
+  const updateTicket = 'id' in router.query
+  const title = updateTicket ? 'Edit ticket' : 'Create ticket'
+  const buttonText = updateTicket ? 'Update ticket' : 'Create ticket'
 
   const onFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -67,9 +73,7 @@ export default function EnterHours() {
 
   return (
     <Page title="Daily Time Ticket">
-      <Text mb={6}>
-        <Required /> indicates required fields.
-      </Text>
+      <h2 className="text-slate-700 mb-6 text-xl font-bold">{title}</h2>
       <form onSubmit={onFormSubmit}>
         <input type="hidden" name="email" value={user.email.get()} />
         <input type="hidden" name="name" value={user.displayName.get()} />
@@ -141,7 +145,7 @@ export default function EnterHours() {
         </FormGroup>
 
         <Button colorScheme="cyan" type="submit">
-          Submit Ticket
+          {buttonText}
         </Button>
       </form>
     </Page>

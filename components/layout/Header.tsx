@@ -35,9 +35,9 @@ const AppMenuItem = ({
   children: string
 }) => {
   const router = useRouter()
-  const isCurrentPage = router.asPath === to
+  const isCurrentPage = router.pathname === to
   const styles = isCurrentPage
-    ? 'text-sky-500 font-normal lg:text-sm'
+    ? 'text-sky-500 font-bold lg:text-sm'
     : 'text-slate-500 font-normal hover:text-sky-400 transition duration-100 lg:text-sm'
 
   return (
