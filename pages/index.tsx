@@ -35,7 +35,7 @@ export default function Index() {
         </p>
       </div>
       <div className="lg:grid grid-cols-3 lg:gap-6">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 mb-12 lg:mb-0">
           <div className="mb-6">
             <Alert
               title="Warning"
