@@ -1,5 +1,6 @@
 import { CONSTANTS } from '@/constants'
 import { useUser } from '@/src/hooks/useUser/useUser'
+import { store } from '@/src/store/store'
 import { getInitials } from '@/src/utils/strings'
 import {
   Box,
@@ -60,7 +61,7 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
         <DrawerHeader fontSize="3xl">Menu</DrawerHeader>
         <DrawerBody>
           <AppMenuItem to="/">Home</AppMenuItem>
-          <AppMenuItem to="/enter-hours">Daily Time Ticket</AppMenuItem>
+          <AppMenuItem to="/daily-time-ticket">Daily Time Ticket</AppMenuItem>
           <AppMenuItem to="#">Safety Sheet</AppMenuItem>
           <AppMenuItem to="#">Equipment List</AppMenuItem>
           <AppMenuItem to="#">Truck List</AppMenuItem>
@@ -73,8 +74,8 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
 }
 
 const UserButton = () => {
-  const user = useUser()
-  const initials = getInitials(user?.displayName!)
+  const { user } = store
+  const initials = getInitials(user.displayName.get())
 
   return (
     <Menu>
