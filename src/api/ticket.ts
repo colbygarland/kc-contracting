@@ -3,7 +3,7 @@ import { objectToArray } from '../utils/arrays'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
-  date: string
+  ticketDate: string
   company: string
   locations: Array<{
     chargeType: ChargeType
@@ -15,7 +15,7 @@ export interface Ticket {
     hours: number
     attachment?: string
   }>
-  ticket: string
+  truck: string
   trailer: string
   labourHours: number
   travelHours?: number

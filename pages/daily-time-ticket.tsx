@@ -1,4 +1,5 @@
 import { H2 } from '@/components/Headings'
+import { Loader } from '@/components/Loader'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { Company, getAllCompanies } from '@/src/api/companies'
@@ -122,6 +123,7 @@ const Equipment = ({
 
 export default function EnterHours() {
   const { user } = store
+  const [loading, setLoading] = useState(false)
   const [locations, setLocations] = useState([Location])
   const [equipment, setEquipment] = useState([Equipment])
   const today = getCurrentDate()
@@ -141,6 +143,7 @@ export default function EnterHours() {
 
   const onFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
+    setLoading(true)
     const form = e.target
     const formJson = Object.fromEntries(new FormData(form).entries())
     const locationValues: Array<string> = []
@@ -195,13 +198,21 @@ export default function EnterHours() {
     })
 
     const body: Ticket = {
-      ...formJson,
+      ticketDate: formJson['ticketDate'].toString(),
+      company: formJson['company'].toString(),
+      labourHours: Number(formJson['labourHours']),
+      truck: formJson['truck'].toString(),
+      trailer: formJson['trailer'].toString(),
+      description: formJson['description'].toString(),
+      travelHours: Number(formJson['travelHours']),
       locations,
       equipment,
     }
 
     const resp = await createTicket(body)
     // todo: properly type the above and add error handling
+
+    setLoading(false)
   }
 
   const addLocation = () => {
@@ -230,7 +241,7 @@ export default function EnterHours() {
         <input type="hidden" name="uid" value={user.uid.get()} />
         <input type="hidden" name="name" value={user.displayName.get()} />
         <FormGroup label="Date" required>
-          <Input type="date" name="date" defaultValue={today} required />
+          <Input type="date" name="ticketDate" defaultValue={today} required />
         </FormGroup>
         <FormGroup label="Company" required>
           <Select name="company" placeholder="Select company" required>
@@ -293,6 +304,7 @@ export default function EnterHours() {
 
         <Button type="submit">{buttonText}</Button>
       </form>
+      {loading && <Loader />}
     </Page>
   )
 }
