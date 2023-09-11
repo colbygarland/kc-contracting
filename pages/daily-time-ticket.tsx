@@ -3,6 +3,7 @@ import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { Company, getAllCompanies } from '@/src/api/companies'
 import { Equipment as IEquipment, getAllEquipment } from '@/src/api/equipment'
+import { ChargeType, Ticket, createTicket } from '@/src/api/ticket'
 import { Truck, getAllTrucks } from '@/src/api/trucks'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
@@ -10,7 +11,6 @@ import { store } from '@/src/store/store'
 import { getCurrentDate } from '@/src/utils/date'
 import {
   Button,
-  Grid,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -173,18 +173,35 @@ export default function EnterHours() {
       // @ts-expect-error
       hoursAtLocationValues.push(i.value)
     })
+
     delete formJson['location']
     delete formJson['chargeType']
-    const body = {
+    delete formJson['attachment']
+    delete formJson['equipmentHours']
+
+    const locations = locationValues.map((location, index) => {
+      return {
+        location,
+        chargeType: chargeTypeValues[index] as ChargeType,
+        hours: hoursAtLocationValues[index],
+      }
+    })
+    const equipment = equipmentValues.map((equipment, index) => {
+      return {
+        id: equipment,
+        hours: equipmentHoursValues[index],
+        attachment: attachmentValues[index],
+      }
+    })
+
+    const body: Ticket = {
       ...formJson,
-      locations: locationValues,
-      hoursAtLocation: hoursAtLocationValues,
-      chargeTypes: chargeTypeValues,
-      equipment: equipmentValues,
-      attachments: attachmentValues,
-      equipmentHours: equipmentHoursValues,
+      locations,
+      equipment,
     }
-    console.log(body)
+
+    const resp = await createTicket(body)
+    // todo: properly type the above and add error handling
   }
 
   const addLocation = () => {
@@ -210,6 +227,7 @@ export default function EnterHours() {
       <H2>{title}</H2>
       <form onSubmit={onFormSubmit}>
         <input type="hidden" name="email" value={user.email.get()} />
+        <input type="hidden" name="uid" value={user.uid.get()} />
         <input type="hidden" name="name" value={user.displayName.get()} />
         <FormGroup label="Date" required>
           <Input type="date" name="date" defaultValue={today} required />
