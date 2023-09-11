@@ -29,44 +29,42 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
   const [chargeToRef, setInputFocus] = useFocus()
 
   return (
-    <>
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-1">
-          <FormGroup label="Charge to">
-            <Select
-              name="chargeType"
-              onChange={e => {
-                setChargeTo(e.target.value)
-                // @ts-ignore
-                setInputFocus()
-              }}
-            >
-              {CHARGE_TO.map(chargeTo => (
-                <option key={chargeTo}>{chargeTo}</option>
-              ))}
-            </Select>
-          </FormGroup>
-        </div>
-        <div className="col-span-2 flex items-center">
-          <FormGroup>
-            <InputGroup>
-              <InputLeftAddon>{chargeTo}</InputLeftAddon>
-              <Input type="text" name="location" required ref={chargeToRef} />
-            </InputGroup>
-          </FormGroup>
-          {showRemoveButton && (
-            <Button
-              variant={'ghost'}
-              p={0}
-              className="mb-6 mt-8"
-              onClick={() => onRemove(index)}
-            >
-              <MdRemoveCircle className="text-red-500" />
-            </Button>
-          )}
-        </div>
+    <div className="grid grid-cols-3 gap-6">
+      <div className="col-span-1">
+        <FormGroup label="Charge to">
+          <Select
+            name="chargeType"
+            onChange={e => {
+              setChargeTo(e.target.value)
+              // @ts-ignore
+              setInputFocus()
+            }}
+          >
+            {CHARGE_TO.map(chargeTo => (
+              <option key={chargeTo}>{chargeTo}</option>
+            ))}
+          </Select>
+        </FormGroup>
       </div>
-    </>
+      <div className="col-span-2 flex items-center">
+        <FormGroup>
+          <InputGroup>
+            <InputLeftAddon>{chargeTo}</InputLeftAddon>
+            <Input type="text" name="location" required ref={chargeToRef} />
+          </InputGroup>
+        </FormGroup>
+        {showRemoveButton && (
+          <Button
+            variant={'ghost'}
+            p={0}
+            className="mb-6 mt-8"
+            onClick={() => onRemove(index)}
+          >
+            <MdRemoveCircle className="text-red-500" />
+          </Button>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -84,43 +82,41 @@ const Equipment = ({
   let showRemoveButton = Boolean(index)
 
   return (
-    <>
-      <div className="grid grid-cols-3 gap-6">
-        <FormGroup label="Equipment" required>
-          <Select name="equipment" placeholder="Select equipment" required>
-            {equipment.map(equipment => (
-              <option value={equipment.id} key={equipment.id}>
-                {equipment.name}
-              </option>
-            ))}
-          </Select>
-        </FormGroup>
-        <FormGroup label="Attachment">
-          <Select name="attachment" placeholder="Select attachment">
-            {attachments.map(attachment => (
-              <option value={attachment.id} key={attachment.id}>
-                {attachment.name}
-              </option>
-            ))}
-          </Select>
-        </FormGroup>
-        <FormGroup label="Hours" required>
-          <div className="flex items-center">
-            <Input type="number" name="equipmentHours" required />
-            {showRemoveButton && (
-              <Button
-                variant={'ghost'}
-                p={0}
-                className=""
-                onClick={() => onRemove(index)}
-              >
-                <MdRemoveCircle className="text-red-500" />
-              </Button>
-            )}
-          </div>
-        </FormGroup>
-      </div>
-    </>
+    <div className="grid grid-cols-3 gap-6">
+      <FormGroup label="Equipment" required>
+        <Select name="equipment" placeholder="Select equipment" required>
+          {equipment.map(equipment => (
+            <option value={equipment.id} key={equipment.id}>
+              {equipment.name}
+            </option>
+          ))}
+        </Select>
+      </FormGroup>
+      <FormGroup label="Attachment">
+        <Select name="attachment" placeholder="Select attachment">
+          {attachments.map(attachment => (
+            <option value={attachment.id} key={attachment.id}>
+              {attachment.name}
+            </option>
+          ))}
+        </Select>
+      </FormGroup>
+      <FormGroup label="Hours" required>
+        <div className="flex items-center">
+          <Input type="number" name="equipmentHours" required />
+          {showRemoveButton && (
+            <Button
+              variant={'ghost'}
+              p={0}
+              className=""
+              onClick={() => onRemove(index)}
+            >
+              <MdRemoveCircle className="text-red-500" />
+            </Button>
+          )}
+        </div>
+      </FormGroup>
+    </div>
   )
 }
 
@@ -223,7 +219,7 @@ export default function EnterHours() {
         {locations.map((location, index) => (
           <Location key={index} index={index} onRemove={removeLocation} />
         ))}
-        <div className="mb-4">
+        <div className="mb-4 pb-6 border-b border-b-slate-200">
           <Button onClick={addLocation}>+ Add Location</Button>
         </div>
         {equipment.map((equipment, index) => (
@@ -235,7 +231,7 @@ export default function EnterHours() {
             onRemove={removeEquipment}
           />
         ))}
-        <div className="mb-4">
+        <div className="mb-4 pb-6 border-b border-b-slate-200">
           <Button onClick={addEquipment}>+ Add Equipment</Button>
         </div>
         <FormGroup label="Trailer">
