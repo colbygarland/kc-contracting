@@ -82,27 +82,36 @@ const Equipment = ({
   let showRemoveButton = Boolean(index)
 
   return (
-    <FormGroup label="Equipment" required>
-      <div className="flex items-center">
-        <Select name="equipment" placeholder="Select equipment" required>
-          {equipment.map(equipment => (
-            <option value={equipment.id} key={equipment.id}>
-              {equipment.name}
-            </option>
-          ))}
-        </Select>
-        {showRemoveButton && (
-          <Button
-            variant={'ghost'}
-            p={0}
-            className=""
-            onClick={() => onRemove(index)}
-          >
-            <MdRemoveCircle className="text-red-500" />
-          </Button>
-        )}
+    <div className="grid grid-cols-3 gap-6">
+      <div className="col-span-2">
+        <FormGroup label="Equipment" required>
+          <Select name="equipment" placeholder="Select equipment" required>
+            {equipment.map(equipment => (
+              <option value={equipment.id} key={equipment.id}>
+                {equipment.name}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
       </div>
-    </FormGroup>
+      <div className="col-span-1">
+        <FormGroup label="Hours" required>
+          <div className="flex items-center">
+            <Input type="number" name="equipmentHours" required />
+            {showRemoveButton && (
+              <Button
+                variant={'ghost'}
+                p={0}
+                className=""
+                onClick={() => onRemove(index)}
+              >
+                <MdRemoveCircle className="text-red-500" />
+              </Button>
+            )}
+          </div>
+        </FormGroup>
+      </div>
+    </div>
   )
 }
 
@@ -128,6 +137,7 @@ export default function EnterHours() {
     const locationValues: Array<string> = []
     const chargeTypeValues: Array<string> = []
     const equipmentValues: Array<string> = []
+    const equipmentHoursValues: Array<number> = []
     document.querySelectorAll('input[name="location"]').forEach(i => {
       // @ts-expect-error
       locationValues.push(i.value)
@@ -140,6 +150,10 @@ export default function EnterHours() {
       // @ts-expect-error
       equipmentValues.push(i.value)
     })
+    document.querySelectorAll('input[name="equipmentHours"]').forEach(i => {
+      // @ts-expect-error
+      equipmentHoursValues.push(i.value)
+    })
     delete formJson['location']
     delete formJson['chargeType']
     const body = {
@@ -147,6 +161,7 @@ export default function EnterHours() {
       locations: locationValues,
       chargeTypes: chargeTypeValues,
       equipment: equipmentValues,
+      equipmentHours: equipmentHoursValues,
     }
     console.log(body)
   }
@@ -213,12 +228,9 @@ export default function EnterHours() {
             ))}
           </Select>
         </FormGroup>
-        <Grid templateColumns="repeat(3, 1fr)" gap={6}>
+        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           <FormGroup label="Labour Hours" required>
             <Input type="number" name="labour_hours" required />
-          </FormGroup>
-          <FormGroup label="Equipment Hours">
-            <Input type="number" name="equipment_hours" />
           </FormGroup>
           <FormGroup label="Travel Time">
             <Input type="number" name="travel_time" />
