@@ -4,6 +4,9 @@ import { toTimestamp } from '../utils/date'
 
 const db = getDatabase()
 
+// Handles creating, updating, and deleting.
+// Send `null` data to delete.
+// Send an id to update/delete.
 export const writeToDatabase = async ({
   data,
   path,
@@ -17,9 +20,11 @@ export const writeToDatabase = async ({
   const generatedId = id ? id : generateId(JSON.stringify(data))
   set(ref(db, `/data/${path}/${generatedId}`), {
     ...data,
-    updatedAt: now,
-    deletedAt: null,
-    id: generatedId,
+    ...(data && {
+      updatedAt: now,
+      deletedAt: null,
+      id: generatedId,
+    }),
     ...(!id && {
       createdAt: now,
     }),

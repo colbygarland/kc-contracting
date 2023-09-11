@@ -39,7 +39,19 @@ export const updateCompany = async (
   }
 }
 
-export const deleteCompany = async () => {}
+export const deleteCompany = async (companyId: string) => {
+  try {
+    await writeToDatabase({
+      data: null,
+      path: PATH,
+      id: companyId,
+    })
+    return true
+  } catch (error) {
+    console.error(`Error deleting company. Error: ${error}`)
+    return false
+  }
+}
 
 export const getCompany = async (
   companyId: string,

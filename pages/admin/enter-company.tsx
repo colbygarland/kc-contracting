@@ -5,6 +5,7 @@ import { Page } from '@/components/layout/Page'
 import {
   Company,
   createCompany,
+  deleteCompany,
   getAllCompanies,
   getCompany,
   updateCompany,
@@ -12,6 +13,12 @@ import {
 import { useData } from '@/src/hooks/useData'
 import { fromTimestamp } from '@/src/utils/date'
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Button,
   Input,
   Link,
@@ -22,10 +29,11 @@ import {
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, ComponentProps, useEffect, useState } from 'react'
-import { MdEditDocument } from 'react-icons/md'
+import { ChangeEvent, ComponentProps, useEffect, useRef, useState } from 'react'
+import { MdDelete, MdEditDocument } from 'react-icons/md'
 
 const ALERT_STATES: { [key: string]: ComponentProps<typeof Alert> } = {
   created: {
@@ -46,6 +54,9 @@ const ALERT_STATES: { [key: string]: ComponentProps<typeof Alert> } = {
 }
 
 export default function EnterCompany() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = useRef()
+  const [deleteCompanyId, setDeleteCompanyId] = useState('')
   const router = useRouter()
   const editingCompany = router.query.id
   const [editingCompanyName, setEditingCompanyName] = useState<Company | null>(
@@ -92,6 +103,11 @@ export default function EnterCompany() {
     router.reload()
   }
 
+  const onDelete = async () => {
+    await deleteCompany(deleteCompanyId)
+    router.reload()
+  }
+
   return (
     <Page title="Companies">
       <div className="lg:grid grid-cols-3 lg:gap-6">
@@ -121,6 +137,16 @@ export default function EnterCompany() {
                           <MdEditDocument />
                         </Button>
                       </Link>
+                      <Button
+                        colorScheme="red"
+                        ml={2}
+                        onClick={() => {
+                          setDeleteCompanyId(company.id!)
+                          onOpen()
+                        }}
+                      >
+                        <MdDelete />
+                      </Button>
                     </Td>
                   </Tr>
                 ))}
@@ -155,6 +181,35 @@ export default function EnterCompany() {
           </form>
         </div>
       </div>
+      <AlertDialog
+        isOpen={isOpen}
+        // @ts-expect-error
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Company
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              {/* @ts-expect-error */}
+              <Button ref={cancelRef} onClick={onClose}>
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={onDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Page>
   )
 }
