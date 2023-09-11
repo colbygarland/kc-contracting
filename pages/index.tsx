@@ -1,4 +1,5 @@
 import { Alert } from '@/components/Alert'
+import { H2 } from '@/components/Headings'
 import { Page } from '@/components/layout/Page'
 import { store } from '@/src/store/store'
 import { getGreeting } from '@/src/utils/date'
@@ -97,9 +98,7 @@ export default function Index() {
         </div>
         <div className="lg:col-span-1">
           <div className="hidden lg:block">
-            <h2 className="mb-4 text-xl text-slate-800 font-bold">
-              Quick Actions
-            </h2>
+            <H2>Quick Actions</H2>
           </div>
           <div className="grid grid-cols-2 gap-6 pb-6 mb-6 border-b-2 border-b-slate-50">
             <Button>

@@ -1,6 +1,9 @@
+import { H2 } from '@/components/Headings'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { Required } from '@/components/forms/Required'
 import { Page } from '@/components/layout/Page'
+import { Company, getAllCompanies } from '@/src/api/companies'
+import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
 import { store } from '@/src/store/store'
 import { getCurrentDate } from '@/src/utils/date'
@@ -15,18 +18,7 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, useRef, useState } from 'react'
-
-const COMPANIES_TO_REPLACE_BY_API_CALL = [
-  {
-    id: 'ewrewrewr',
-    name: 'Birchcliff',
-  },
-  {
-    id: 'fdghyghj',
-    name: 'CNRL',
-  },
-]
+import { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 const EQUIPMENT_TO_REPLACE_BY_API_CALL = [
   {
@@ -56,6 +48,7 @@ export default function EnterHours() {
   const { user } = store
   const today = getCurrentDate()
   const router = useRouter()
+  const companies = useData<Company>(getAllCompanies)
 
   const [chargeTo, setChargeTo] = useState(CHARGE_TO[0])
   const [chargeToRef, setInputFocus] = useFocus()
@@ -73,7 +66,7 @@ export default function EnterHours() {
 
   return (
     <Page title="Daily Time Ticket">
-      <h2 className="text-slate-700 mb-6 text-xl font-bold">{title}</h2>
+      <H2>{title}</H2>
       <form onSubmit={onFormSubmit}>
         <input type="hidden" name="email" value={user.email.get()} />
         <input type="hidden" name="name" value={user.displayName.get()} />
@@ -82,7 +75,7 @@ export default function EnterHours() {
         </FormGroup>
         <FormGroup label="Company" required>
           <Select name="company" placeholder="Select company" required>
-            {COMPANIES_TO_REPLACE_BY_API_CALL.map(company => (
+            {companies.map(company => (
               <option value={company.id} key={company.id}>
                 {company.name}
               </option>

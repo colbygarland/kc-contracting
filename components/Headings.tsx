@@ -19,14 +19,8 @@ export const H1 = ({ children, ...rest }: { children: string }) => {
 
 export const H2 = ({ children, ...rest }: { children: string }) => {
   return (
-    <Heading
-      {...rest}
-      as="h2"
-      size="lg"
-      fontWeight="extrabold"
-      className={inter.className}
-    >
+    <h2 className="mb-4 text-xl text-slate-700 font-bold" {...rest}>
       {children}
-    </Heading>
+    </h2>
   )
 }
