@@ -3,6 +3,7 @@ import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { Company, getAllCompanies } from '@/src/api/companies'
 import { Equipment as IEquipment, getAllEquipment } from '@/src/api/equipment'
+import { Truck, getAllTrucks } from '@/src/api/trucks'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
 import { store } from '@/src/store/store'
@@ -128,6 +129,7 @@ export default function EnterHours() {
   const router = useRouter()
   const companies = useData<Company>(getAllCompanies)
   const allEquipment = useData<IEquipment>(getAllEquipment)
+  const trucks = useData<Truck>(getAllTrucks)
   const equipmentList = allEquipment.filter(
     e => !e.isTrailer && !e.isAttachment,
   )
@@ -234,23 +236,34 @@ export default function EnterHours() {
         <div className="mb-4 pb-6 border-b border-b-slate-200">
           <Button onClick={addEquipment}>+ Add Equipment</Button>
         </div>
-        <FormGroup label="Trailer">
-          <Select name="trailer" placeholder="Select trailer">
-            {trailers.map(trailer => (
-              <option value={trailer.id} key={trailer.id}>
-                {trailer.name}
-              </option>
-            ))}
-          </Select>
-        </FormGroup>
-        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+        <div className="grid grid-cols-2 gap-6">
+          <FormGroup label="Truck">
+            <Select name="truck" placeholder="Select truck">
+              {trucks.map(truck => (
+                <option value={truck.id} key={truck.id}>
+                  {truck.name}
+                </option>
+              ))}
+            </Select>
+          </FormGroup>
+          <FormGroup label="Trailer">
+            <Select name="trailer" placeholder="Select trailer">
+              {trailers.map(trailer => (
+                <option value={trailer.id} key={trailer.id}>
+                  {trailer.name}
+                </option>
+              ))}
+            </Select>
+          </FormGroup>
+        </div>
+        <div className="grid grid-cols-2 gap-6">
           <FormGroup label="Labour Hours" required>
             <Input type="number" name="labour_hours" required />
           </FormGroup>
           <FormGroup label="Travel Time">
             <Input type="number" name="travel_time" />
           </FormGroup>
-        </Grid>
+        </div>
         <FormGroup label="Description">
           <Textarea name="description" />
         </FormGroup>
