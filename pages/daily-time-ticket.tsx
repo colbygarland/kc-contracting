@@ -255,9 +255,7 @@ export default function EnterHours() {
           <Textarea name="description" />
         </FormGroup>
 
-        <Button colorScheme="cyan" type="submit">
-          {buttonText}
-        </Button>
+        <Button type="submit">{buttonText}</Button>
       </form>
     </Page>
   )
