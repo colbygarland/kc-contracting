@@ -2,7 +2,7 @@ import { H2 } from '@/components/Headings'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { Company, getAllCompanies } from '@/src/api/companies'
-import { Equipment, getAllEquipment } from '@/src/api/equipment'
+import { Equipment as IEquipment, getAllEquipment } from '@/src/api/equipment'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
 import { store } from '@/src/store/store'
@@ -17,7 +17,7 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, ReactNode, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { MdRemoveCircle } from 'react-icons/md'
 
 const CHARGE_TO = ['PO #', 'LSD', 'Job #']
@@ -70,14 +70,51 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
   )
 }
 
+const Equipment = ({
+  index,
+  equipment,
+  onRemove,
+}: {
+  index?: number
+  equipment: Array<IEquipment>
+  onRemove?: any
+}) => {
+  let showRemoveButton = Boolean(index)
+
+  return (
+    <FormGroup label="Equipment" required>
+      <div className="flex items-center">
+        <Select name="equipment" placeholder="Select equipment" required>
+          {equipment.map(equipment => (
+            <option value={equipment.id} key={equipment.id}>
+              {equipment.name}
+            </option>
+          ))}
+        </Select>
+        {showRemoveButton && (
+          <Button
+            variant={'ghost'}
+            p={0}
+            className=""
+            onClick={() => onRemove(index)}
+          >
+            <MdRemoveCircle className="text-red-500" />
+          </Button>
+        )}
+      </div>
+    </FormGroup>
+  )
+}
+
 export default function EnterHours() {
   const { user } = store
   const [locations, setLocations] = useState([Location])
+  const [equipment, setEquipment] = useState([Equipment])
   const today = getCurrentDate()
   const router = useRouter()
   const companies = useData<Company>(getAllCompanies)
-  const allEquipment = useData<Equipment>(getAllEquipment)
-  const equipment = allEquipment.filter(e => !e.isTrailer)
+  const allEquipment = useData<IEquipment>(getAllEquipment)
+  const equipmentList = allEquipment.filter(e => !e.isTrailer)
   const trailers = allEquipment.filter(e => e.isTrailer)
 
   const updateTicket = 'id' in router.query
@@ -90,6 +127,7 @@ export default function EnterHours() {
     const formJson = Object.fromEntries(new FormData(form).entries())
     const locationValues: Array<string> = []
     const chargeTypeValues: Array<string> = []
+    const equipmentValues: Array<string> = []
     document.querySelectorAll('input[name="location"]').forEach(i => {
       // @ts-expect-error
       locationValues.push(i.value)
@@ -98,12 +136,17 @@ export default function EnterHours() {
       // @ts-expect-error
       chargeTypeValues.push(i.value)
     })
+    document.querySelectorAll('select[name="equipment"]').forEach(i => {
+      // @ts-expect-error
+      equipmentValues.push(i.value)
+    })
     delete formJson['location']
     delete formJson['chargeType']
     const body = {
       ...formJson,
       locations: locationValues,
       chargeTypes: chargeTypeValues,
+      equipment: equipmentValues,
     }
     console.log(body)
   }
@@ -115,6 +158,15 @@ export default function EnterHours() {
     const l = locations
     l.splice(index, 1)
     setLocations([...l])
+  }
+
+  const addEquipment = () => {
+    setEquipment([...equipment, Equipment])
+  }
+  const removeEquipment = (index: number) => {
+    const e = equipment
+    e.splice(index, 1)
+    setEquipment([...e])
   }
 
   return (
@@ -141,15 +193,17 @@ export default function EnterHours() {
         <div className="mb-4">
           <Button onClick={addLocation}>+ Add Location</Button>
         </div>
-        <FormGroup label="Equipment" required>
-          <Select name="equipment" placeholder="Select equipment" required>
-            {equipment.map(equipment => (
-              <option value={equipment.id} key={equipment.id}>
-                {equipment.name}
-              </option>
-            ))}
-          </Select>
-        </FormGroup>
+        {equipment.map((equipment, index) => (
+          <Equipment
+            equipment={equipmentList}
+            key={index}
+            index={index}
+            onRemove={removeEquipment}
+          />
+        ))}
+        <div className="mb-4">
+          <Button onClick={addEquipment}>+ Add Equipment</Button>
+        </div>
         <FormGroup label="Trailer">
           <Select name="trailer" placeholder="Select trailer">
             {trailers.map(trailer => (
