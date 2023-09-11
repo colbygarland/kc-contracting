@@ -18,3 +18,20 @@ export const getGreeting = () => {
     return 'Good evening'
   }
 }
+
+export const toTimestamp = (date: Date) => {
+  return Math.floor(date.getTime())
+}
+
+export const fromTimestamp = (timestamp: number | string) => {
+  return new Date(timestamp).toLocaleString()
+  const date = new Date(Number(timestamp))
+  // Hours part from the timestamp
+  const hours = date.getHours()
+  // Minutes part from the timestamp
+  const minutes = '0' + date.getMinutes()
+  // Seconds part from the timestamp
+  const seconds = '0' + date.getSeconds()
+  // Will display time in 10:30:23 format
+  return hours + ':' + minutes.substring(-2) + ':' + seconds.substring(-2)
+}
