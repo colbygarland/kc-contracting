@@ -20,6 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Button,
+  Checkbox,
   Input,
   Link,
   Table,
@@ -117,6 +118,7 @@ export default function EnterCompany() {
               <Thead>
                 <Tr>
                   <Th>Company</Th>
+                  <Th>Multiple Locations</Th>
                   <Th>Last Updated</Th>
                   <Th></Th>
                 </Tr>
@@ -130,6 +132,7 @@ export default function EnterCompany() {
                     })}
                   >
                     <Td>{company.name}</Td>
+                    <Td>{company.allowMultipleLocations ? '✅' : '-'}</Td>
                     <Td>{fromTimestamp(company.updatedAt!)}</Td>
                     <Td>
                       <Link href={`/admin/enter-company?id=${company.id}`}>
@@ -176,6 +179,18 @@ export default function EnterCompany() {
                 name="name"
                 required
               />
+            </FormGroup>
+            <FormGroup label="Allow multiple locations?">
+              <Checkbox
+                name="allowMultipleLocations"
+                value="true"
+                defaultChecked={editingCompanyName?.allowMultipleLocations}
+                defaultValue={
+                  editingCompanyName?.allowMultipleLocations ? 'true' : 'false'
+                }
+              >
+                Yes
+              </Checkbox>
             </FormGroup>
             <Button type="submit">{buttonText}</Button>
           </form>

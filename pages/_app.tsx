@@ -5,6 +5,8 @@ import { ChakraProvider } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import { enableReactUse } from '@legendapp/state/config/enableReactUse'
+import Head from 'next/head'
+import { CONSTANTS } from '@/constants'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,10 +17,15 @@ export default function App({ Component, pageProps }: AppProps) {
   useAuthentication()
 
   return (
-    <ChakraProvider>
-      <div className={inter.className}>
-        <Component {...pageProps} />
-      </div>
-    </ChakraProvider>
+    <>
+      <Head>
+        <title>{CONSTANTS.APP_NAME}</title>
+      </Head>
+      <ChakraProvider>
+        <div className={inter.className}>
+          <Component {...pageProps} />
+        </div>
+      </ChakraProvider>
+    </>
   )
 }

@@ -3,6 +3,7 @@ import { objectToArray } from '../utils/arrays'
 
 export interface Company {
   name: string
+  allowMultipleLocations?: boolean
   id?: string
   createdAt?: string
   updatedAt?: string
