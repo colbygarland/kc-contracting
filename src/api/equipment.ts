@@ -4,6 +4,7 @@ import { objectToArray } from '../utils/arrays'
 export interface Equipment {
   name: string
   isTrailer?: boolean
+  isAttachment?: boolean
   id?: string
   createdAt?: string
   updatedAt?: string

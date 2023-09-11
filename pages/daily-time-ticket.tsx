@@ -73,17 +73,19 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
 const Equipment = ({
   index,
   equipment,
+  attachments,
   onRemove,
 }: {
   index?: number
   equipment: Array<IEquipment>
+  attachments: Array<IEquipment>
   onRemove?: any
 }) => {
   let showRemoveButton = Boolean(index)
 
   return (
-    <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-2">
+    <>
+      <div className="grid grid-cols-3 gap-6">
         <FormGroup label="Equipment" required>
           <Select name="equipment" placeholder="Select equipment" required>
             {equipment.map(equipment => (
@@ -93,8 +95,15 @@ const Equipment = ({
             ))}
           </Select>
         </FormGroup>
-      </div>
-      <div className="col-span-1">
+        <FormGroup label="Attachment">
+          <Select name="attachment" placeholder="Select attachment">
+            {attachments.map(attachment => (
+              <option value={attachment.id} key={attachment.id}>
+                {attachment.name}
+              </option>
+            ))}
+          </Select>
+        </FormGroup>
         <FormGroup label="Hours" required>
           <div className="flex items-center">
             <Input type="number" name="equipmentHours" required />
@@ -111,7 +120,7 @@ const Equipment = ({
           </div>
         </FormGroup>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -123,8 +132,11 @@ export default function EnterHours() {
   const router = useRouter()
   const companies = useData<Company>(getAllCompanies)
   const allEquipment = useData<IEquipment>(getAllEquipment)
-  const equipmentList = allEquipment.filter(e => !e.isTrailer)
+  const equipmentList = allEquipment.filter(
+    e => !e.isTrailer && !e.isAttachment,
+  )
   const trailers = allEquipment.filter(e => e.isTrailer)
+  const attachmentsList = allEquipment.filter(e => e.isAttachment)
 
   const updateTicket = 'id' in router.query
   const title = updateTicket ? 'Edit ticket' : 'Create ticket'
@@ -137,6 +149,7 @@ export default function EnterHours() {
     const locationValues: Array<string> = []
     const chargeTypeValues: Array<string> = []
     const equipmentValues: Array<string> = []
+    const attachmentValues: Array<string> = []
     const equipmentHoursValues: Array<number> = []
     document.querySelectorAll('input[name="location"]').forEach(i => {
       // @ts-expect-error
@@ -150,6 +163,10 @@ export default function EnterHours() {
       // @ts-expect-error
       equipmentValues.push(i.value)
     })
+    document.querySelectorAll('select[name="attachment"]').forEach(i => {
+      // @ts-expect-error
+      attachmentValues.push(i.value)
+    })
     document.querySelectorAll('input[name="equipmentHours"]').forEach(i => {
       // @ts-expect-error
       equipmentHoursValues.push(i.value)
@@ -161,6 +178,7 @@ export default function EnterHours() {
       locations: locationValues,
       chargeTypes: chargeTypeValues,
       equipment: equipmentValues,
+      attachments: attachmentValues,
       equipmentHours: equipmentHoursValues,
     }
     console.log(body)
@@ -210,6 +228,7 @@ export default function EnterHours() {
         </div>
         {equipment.map((equipment, index) => (
           <Equipment
+            attachments={attachmentsList}
             equipment={equipmentList}
             key={index}
             index={index}
