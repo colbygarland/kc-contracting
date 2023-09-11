@@ -1,4 +1,5 @@
 import { getFromDatabase, writeToDatabase } from '.'
+import { objectToArray } from '../utils/arrays'
 
 export interface Equipment {
   name: string
@@ -76,8 +77,7 @@ export const getAllEquipment = async (): Promise<Array<Equipment>> => {
       return []
     }
 
-    const equipmentToArray = Object.values(equipment)
-    return equipmentToArray as unknown as Array<Equipment>
+    return objectToArray<Equipment>(equipment, 'name')
   } catch (error) {
     console.error(`Error getting all equipment. Error: ${error}`)
     return []
