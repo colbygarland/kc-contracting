@@ -17,21 +17,68 @@ import {
   Textarea,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, ReactNode, useState } from 'react'
+import { MdRemoveCircle } from 'react-icons/md'
 
 const CHARGE_TO = ['PO #', 'LSD', 'Job #']
 
+const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
+  let showRemoveButton = Boolean(index)
+
+  const [chargeTo, setChargeTo] = useState(CHARGE_TO[0])
+  const [chargeToRef, setInputFocus] = useFocus()
+
+  return (
+    <>
+      <div className="grid grid-cols-3 gap-6">
+        <div className="col-span-1">
+          <FormGroup label="Charge to">
+            <Select
+              name="chargeType"
+              onChange={e => {
+                setChargeTo(e.target.value)
+                // @ts-ignore
+                setInputFocus()
+              }}
+            >
+              {CHARGE_TO.map(chargeTo => (
+                <option key={chargeTo}>{chargeTo}</option>
+              ))}
+            </Select>
+          </FormGroup>
+        </div>
+        <div className="col-span-2 flex items-center">
+          <FormGroup>
+            <InputGroup>
+              <InputLeftAddon>{chargeTo}</InputLeftAddon>
+              <Input type="text" name="location" required ref={chargeToRef} />
+            </InputGroup>
+          </FormGroup>
+          {showRemoveButton && (
+            <Button
+              variant={'ghost'}
+              p={0}
+              className="mb-6 mt-8"
+              onClick={() => onRemove(index)}
+            >
+              <MdRemoveCircle className="text-red-500" />
+            </Button>
+          )}
+        </div>
+      </div>
+    </>
+  )
+}
+
 export default function EnterHours() {
   const { user } = store
+  const [locations, setLocations] = useState([Location])
   const today = getCurrentDate()
   const router = useRouter()
   const companies = useData<Company>(getAllCompanies)
   const allEquipment = useData<Equipment>(getAllEquipment)
   const equipment = allEquipment.filter(e => !e.isTrailer)
   const trailers = allEquipment.filter(e => e.isTrailer)
-
-  const [chargeTo, setChargeTo] = useState(CHARGE_TO[0])
-  const [chargeToRef, setInputFocus] = useFocus()
 
   const updateTicket = 'id' in router.query
   const title = updateTicket ? 'Edit ticket' : 'Create ticket'
@@ -41,7 +88,33 @@ export default function EnterHours() {
     e.preventDefault()
     const form = e.target
     const formJson = Object.fromEntries(new FormData(form).entries())
-    console.log(formJson)
+    const locationValues: Array<string> = []
+    const chargeTypeValues: Array<string> = []
+    document.querySelectorAll('input[name="location"]').forEach(i => {
+      // @ts-expect-error
+      locationValues.push(i.value)
+    })
+    document.querySelectorAll('select[name="chargeType"]').forEach(i => {
+      // @ts-expect-error
+      chargeTypeValues.push(i.value)
+    })
+    delete formJson['location']
+    delete formJson['chargeType']
+    const body = {
+      ...formJson,
+      locations: locationValues,
+      chargeTypes: chargeTypeValues,
+    }
+    console.log(body)
+  }
+
+  const addLocation = () => {
+    setLocations([...locations, Location])
+  }
+  const removeLocation = (index: number) => {
+    const l = locations
+    l.splice(index, 1)
+    setLocations([...l])
   }
 
   return (
@@ -62,31 +135,11 @@ export default function EnterHours() {
             ))}
           </Select>
         </FormGroup>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-1">
-            <FormGroup label="Charge to">
-              <Select
-                name="charge_type"
-                onChange={e => {
-                  setChargeTo(e.target.value)
-                  // @ts-ignore
-                  setInputFocus()
-                }}
-              >
-                {CHARGE_TO.map(chargeTo => (
-                  <option key={chargeTo}>{chargeTo}</option>
-                ))}
-              </Select>
-            </FormGroup>
-          </div>
-          <div className="col-span-2">
-            <FormGroup>
-              <InputGroup>
-                <InputLeftAddon>{chargeTo}</InputLeftAddon>
-                <Input type="text" name="location" required ref={chargeToRef} />
-              </InputGroup>
-            </FormGroup>
-          </div>
+        {locations.map((location, index) => (
+          <Location key={index} index={index} onRemove={removeLocation} />
+        ))}
+        <div className="mb-4">
+          <Button onClick={addLocation}>+ Add Location</Button>
         </div>
         <FormGroup label="Equipment" required>
           <Select name="equipment" placeholder="Select equipment" required>
