@@ -25,34 +25,33 @@ const CHARGE_TO = ['PO #', 'LSD', 'Job #']
 
 const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
   let showRemoveButton = Boolean(index)
-
-  const [chargeTo, setChargeTo] = useState(CHARGE_TO[0])
   const [chargeToRef, setInputFocus] = useFocus()
 
   return (
     <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-1">
-        <FormGroup label="Charge to">
-          <Select
-            name="chargeType"
-            onChange={e => {
-              setChargeTo(e.target.value)
-              // @ts-ignore
-              setInputFocus()
-            }}
-          >
-            {CHARGE_TO.map(chargeTo => (
-              <option key={chargeTo}>{chargeTo}</option>
-            ))}
-          </Select>
-        </FormGroup>
-      </div>
-      <div className="col-span-2 flex items-center">
-        <FormGroup>
+      <div className="col-span-2">
+        <FormGroup label="Location">
           <InputGroup>
-            <InputLeftAddon>{chargeTo}</InputLeftAddon>
+            <InputLeftAddon p={0}>
+              <Select
+                name="chargeType"
+                onChange={e => {
+                  // @ts-ignore
+                  setInputFocus()
+                }}
+              >
+                {CHARGE_TO.map(chargeTo => (
+                  <option key={chargeTo}>{chargeTo}</option>
+                ))}
+              </Select>
+            </InputLeftAddon>
             <Input type="text" name="location" required ref={chargeToRef} />
           </InputGroup>
+        </FormGroup>
+      </div>
+      <div className="col-span-1 flex items-center">
+        <FormGroup label="Hours">
+          <Input type="number" name="hoursAtLocation" />
         </FormGroup>
         {showRemoveButton && (
           <Button
@@ -145,6 +144,7 @@ export default function EnterHours() {
     const form = e.target
     const formJson = Object.fromEntries(new FormData(form).entries())
     const locationValues: Array<string> = []
+    const hoursAtLocationValues: Array<number> = []
     const chargeTypeValues: Array<string> = []
     const equipmentValues: Array<string> = []
     const attachmentValues: Array<string> = []
@@ -169,11 +169,16 @@ export default function EnterHours() {
       // @ts-expect-error
       equipmentHoursValues.push(i.value)
     })
+    document.querySelectorAll('input[name="hoursAtLocation"]').forEach(i => {
+      // @ts-expect-error
+      hoursAtLocationValues.push(i.value)
+    })
     delete formJson['location']
     delete formJson['chargeType']
     const body = {
       ...formJson,
       locations: locationValues,
+      hoursAtLocation: hoursAtLocationValues,
       chargeTypes: chargeTypeValues,
       equipment: equipmentValues,
       attachments: attachmentValues,
