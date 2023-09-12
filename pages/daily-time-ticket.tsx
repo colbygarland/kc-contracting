@@ -319,10 +319,10 @@ export default function EnterHours() {
         </div>
         <div className="grid grid-cols-2 gap-6">
           <FormGroup label="Labour Hours" required>
-            <Input type="number" name="labourHours" required />
+            <Input type="number" name="labourHours" min={0} required />
           </FormGroup>
           <FormGroup label="Travel Hours">
-            <Input type="number" name="travelHours" />
+            <Input type="number" name="travelHours" min={0} />
           </FormGroup>
         </div>
         <FormGroup label="Description">
