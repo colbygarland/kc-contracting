@@ -12,12 +12,11 @@ import {
   Td,
   Button,
 } from '@chakra-ui/react'
-import Link from 'next/link'
-import { MdEditDocument, MdDelete } from 'react-icons/md'
 
 export default function Equipment() {
   const allEquipment = useData<Equipment>(getAllEquipment)
-  const equipment = allEquipment.filter(e => !e.isTrailer)
+  const equipment = allEquipment.filter(e => !e.isTrailer && !e.isAttachment)
+  const attachments = allEquipment.filter(e => e.isAttachment)
   const trailers = allEquipment.filter(e => e.isTrailer)
 
   return (
@@ -36,6 +35,27 @@ export default function Equipment() {
                 <Tr key={equipment.id}>
                   <Td>{equipment.name}</Td>
                   <Td>{fromTimestamp(equipment.updatedAt!)}</Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </TableContainer>
+      </div>
+
+      <div className="mb-6 lg:mb-12">
+        <TableContainer>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Attachment</Th>
+                <Th>Last Updated</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {attachments.map(attachment => (
+                <Tr key={attachment.id}>
+                  <Td>{attachment.name}</Td>
+                  <Td>{fromTimestamp(attachment.updatedAt!)}</Td>
                 </Tr>
               ))}
             </Tbody>

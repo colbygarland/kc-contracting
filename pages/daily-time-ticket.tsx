@@ -228,6 +228,7 @@ export default function EnterHours() {
       travelHours: Number(formJson['travelHours']),
       locations,
       equipment,
+      submittedAt: '',
     }
 
     console.log(body)
