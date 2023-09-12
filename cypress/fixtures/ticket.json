@@ -1,0 +1,41 @@
+{
+  "uid": "PKd8aXUwy2U5i2i1uGaq7qORf5g1",
+  "email": "colbygarland@gmail.com",
+  "ticketDate": "2023-09-11",
+  "company": "826884132",
+  "labourHours": 8,
+  "truck": "550575153",
+  "trailer": "1790848879",
+  "description": "Testing creating a ticket.",
+  "travelHours": 1,
+  "locations": [
+    {
+      "location": "1234546",
+      "chargeType": "PO #",
+      "hours": 8
+    },
+    {
+      "location": "8-1-51-14 W4",
+      "chargeType": "LSD",
+      "hours": 3
+    },
+    {
+      "location": "1201",
+      "chargeType": "Job #",
+      "hours": 0
+    }
+  ],
+  "equipment": [
+    {
+      "id": "2648641251",
+      "hours": 8,
+      "attachment": ""
+    },
+    {
+      "id": "1000027412",
+      "hours": 1,
+      "attachment": "108271177"
+    }
+  ],
+  "submittedAt": ""
+}

@@ -31,20 +31,9 @@ export default function Index() {
 
   return (
     <Page title="Dashboard">
-      <div className="mb-10">
-        <p className="font-bold text-slate-700">
-          {greeting}, {user?.displayName}!
-        </p>
-      </div>
       <div className="lg:grid grid-cols-3 lg:gap-6">
         <div className="lg:col-span-2 mb-12 lg:mb-0">
-          <div className="mb-6">
-            <Alert
-              title="Warning"
-              message="You have 3 tickets that need attention."
-              type="warning"
-            />
-          </div>
+          <H2>Tickets to be Submitted</H2>
           <TableContainer>
             <Table variant="simple">
               <Thead>

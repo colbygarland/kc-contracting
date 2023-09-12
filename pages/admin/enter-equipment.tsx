@@ -70,7 +70,8 @@ export default function EnterEquipment() {
   })
 
   const allEquipment = useData<Equipment>(getAllEquipment)
-  const equipment = allEquipment.filter(e => !e.isTrailer)
+  const equipment = allEquipment.filter(e => !e.isTrailer && !e.isAttachment)
+  const attachments = allEquipment.filter(e => e.isAttachment)
   const trailers = allEquipment.filter(e => e.isTrailer)
 
   useEffect(() => {
@@ -160,6 +161,52 @@ export default function EnterEquipment() {
             </TableContainer>
           </div>
 
+          <div className="mb-6 lg:mb-12">
+            <TableContainer>
+              <Table variant="simple">
+                <Thead>
+                  <Tr>
+                    <Th>Attachment</Th>
+                    <Th>Last Updated</Th>
+                    <Th></Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {attachments.map(attachment => (
+                    <Tr
+                      key={attachment.id}
+                      {...(attachment.id === editingEquipment && {
+                        background: 'blue.50',
+                      })}
+                    >
+                      <Td>{attachment.name}</Td>
+                      <Td>{fromTimestamp(attachment.updatedAt!)}</Td>
+                      <Td>
+                        <Link
+                          href={`/admin/enter-equipment?id=${attachment.id}`}
+                        >
+                          <Button>
+                            <MdEditDocument />
+                          </Button>
+                        </Link>
+                        <Button
+                          colorScheme="red"
+                          ml={2}
+                          onClick={() => {
+                            setDeleteEquipmentId(attachment.id!)
+                            onOpen()
+                          }}
+                        >
+                          <MdDelete />
+                        </Button>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </div>
+
           <TableContainer>
             <Table variant="simple">
               <Thead>
@@ -224,6 +271,11 @@ export default function EnterEquipment() {
                 name="name"
                 required
               />
+            </FormGroup>
+            <FormGroup label="Is this an attachment?">
+              <Checkbox name="isAttachment" value="true">
+                Yes
+              </Checkbox>
             </FormGroup>
             <FormGroup label="Is this a trailer?">
               <Checkbox name="isTrailer" value="true">
