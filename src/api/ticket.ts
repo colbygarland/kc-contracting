@@ -3,6 +3,8 @@ import { objectToArray } from '../utils/arrays'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
+  uid: string
+  email: string
   ticketDate: string
   company: string
   locations: Array<{

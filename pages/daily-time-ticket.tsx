@@ -17,12 +17,30 @@ import {
   InputLeftAddon,
   Select,
   Textarea,
+  useToast,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useState } from 'react'
 import { MdRemoveCircle } from 'react-icons/md'
 
-const CHARGE_TO = ['PO #', 'LSD', 'Job #']
+const CHARGE_TO: Array<ChargeType> = ['PO #', 'LSD', 'Job #']
+
+const TOASTS = {
+  success: {
+    title: 'Ticket created',
+    message: 'The ticket has been successfully saved.',
+    status: 'success' as 'success',
+    duration: 4000,
+    isCloseable: true,
+  },
+  error: {
+    title: 'Something went wrong',
+    message: 'Your ticket has not been saved.',
+    status: 'error' as 'error',
+    duration: 4000,
+    isCloseable: true,
+  },
+}
 
 const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
   let showRemoveButton = Boolean(index)
@@ -123,6 +141,7 @@ const Equipment = ({
 
 export default function EnterHours() {
   const { user } = store
+  const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [locations, setLocations] = useState([Location])
   const [equipment, setEquipment] = useState([Equipment])
@@ -186,18 +205,20 @@ export default function EnterHours() {
       return {
         location,
         chargeType: chargeTypeValues[index] as ChargeType,
-        hours: hoursAtLocationValues[index],
+        hours: Number(hoursAtLocationValues[index]),
       }
     })
     const equipment = equipmentValues.map((equipment, index) => {
       return {
         id: equipment,
-        hours: equipmentHoursValues[index],
+        hours: Number(equipmentHoursValues[index]),
         attachment: attachmentValues[index],
       }
     })
 
     const body: Ticket = {
+      uid: user.uid.get(),
+      email: user.email.get(),
       ticketDate: formJson['ticketDate'].toString(),
       company: formJson['company'].toString(),
       labourHours: Number(formJson['labourHours']),
@@ -209,8 +230,13 @@ export default function EnterHours() {
       equipment,
     }
 
-    const resp = await createTicket(body)
-    // todo: properly type the above and add error handling
+    console.log(body)
+    const ticketCreated = await createTicket(body)
+    if (ticketCreated) {
+      toast(TOASTS.success)
+    } else {
+      toast(TOASTS.error)
+    }
 
     setLoading(false)
   }
@@ -292,10 +318,10 @@ export default function EnterHours() {
         </div>
         <div className="grid grid-cols-2 gap-6">
           <FormGroup label="Labour Hours" required>
-            <Input type="number" name="labour_hours" required />
+            <Input type="number" name="labourHours" required />
           </FormGroup>
-          <FormGroup label="Travel Time">
-            <Input type="number" name="travel_time" />
+          <FormGroup label="Travel Hours">
+            <Input type="number" name="travelHours" />
           </FormGroup>
         </div>
         <FormGroup label="Description">

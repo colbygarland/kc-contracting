@@ -145,7 +145,7 @@ const Mobile = () => {
 const Desktop = ({ title }: { title: string }) => {
   return (
     <div className="hidden lg:block">
-      <div className="fixed top-0 left-0 h-screen w-64 bg-slate-50 border-r border-r-slate-200">
+      <div className="fixed top-0 left-0 h-screen w-64 z-50 bg-slate-50 border-r border-r-slate-200">
         <div className="w-md p-6">
           <p className="mb-6 font-bold">{CONSTANTS.APP_NAME}</p>
           <nav className="">
@@ -153,7 +153,7 @@ const Desktop = ({ title }: { title: string }) => {
           </nav>
         </div>
       </div>
-      <div className="fixed top-0 left-64 border-b border-b-slate-200 h-16 desktop-header flex items-center px-8">
+      <div className="fixed top-0 left-64 z-50 bg-white border-b border-b-slate-200 h-16 desktop-header flex items-center px-8">
         <h1 className="text-lg font-bold text-slate-600 uppercase">{title}</h1>
         <div className="ml-auto">
           <UserButton />
