@@ -38,8 +38,12 @@ import {
   MdSupervisorAccount,
 } from 'react-icons/md'
 
-const TicketsForApproval = () => {
-  const [tickets, setTickets] = useState<Array<Ticket>>([])
+const TicketsForApproval = ({
+  initialTickets,
+}: {
+  initialTickets: Array<Ticket>
+}) => {
+  const [tickets, setTickets] = useState<Array<Ticket>>(initialTickets)
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
 
   useEffect(() => {
@@ -231,15 +235,23 @@ const TicketsForApproval = () => {
   )
 }
 
-export default function Index() {
+export default function Index({
+  approvalTickets,
+}: {
+  approvalTickets: Array<Ticket>
+}) {
   const session = useSession()
   const adminUser = isAdmin(session.data?.user?.email)
+
+  console.log('approvalTickets', approvalTickets)
 
   return (
     <Page title="Dashboard">
       <div className="lg:grid grid-cols-3 lg:gap-6">
         <div className="lg:col-span-2 mb-12 lg:mb-0">
-          {adminUser ? <TicketsForApproval /> : null}
+          {adminUser ? (
+            <TicketsForApproval initialTickets={approvalTickets} />
+          ) : null}
         </div>
         <div className="lg:col-span-1">
           <div className="hidden lg:block">
@@ -283,13 +295,13 @@ export default function Index() {
   )
 }
 
-// export async function getServerSideProps(){
-//   const approvalTickets = await getAllTicketsForApproval()
-//   return {
-//     props: {
-//       approvalTickets
-//     }
-//   }
-// }
+export async function getServerSideProps() {
+  const approvalTickets = await getAllTicketsForApproval()
+  return {
+    props: {
+      approvalTickets,
+    },
+  }
+}
 
 Index.auth = true
