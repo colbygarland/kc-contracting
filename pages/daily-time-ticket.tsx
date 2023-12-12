@@ -19,6 +19,7 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useState } from 'react'
 import { MdRemoveCircle } from 'react-icons/md'
@@ -140,7 +141,7 @@ const Equipment = ({
 }
 
 export default function EnterHours() {
-  const { user } = store
+  const session = useSession()
   const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [locations, setLocations] = useState([Location])
@@ -217,8 +218,8 @@ export default function EnterHours() {
     })
 
     const body: Ticket = {
-      uid: user.uid.get(),
-      email: user.email.get(),
+      uid: 'todo',
+      email: session.data!.user!.email!,
       ticketDate: formJson['ticketDate'].toString(),
       company: formJson['company'].toString(),
       labourHours: Number(formJson['labourHours']),
@@ -265,9 +266,8 @@ export default function EnterHours() {
     <Page title="Daily Time Ticket">
       <H2>{title}</H2>
       <form onSubmit={onFormSubmit}>
-        <input type="hidden" name="email" value={user.email.get()} />
-        <input type="hidden" name="uid" value={user.uid.get()} />
-        <input type="hidden" name="name" value={user.displayName.get()} />
+        <input type="hidden" name="email" value={session.data!.user!.email!} />
+        <input type="hidden" name="uid" value={'todo'} />
         <FormGroup label="Date" required>
           <Input type="date" name="ticketDate" defaultValue={today} required />
         </FormGroup>

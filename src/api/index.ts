@@ -1,4 +1,13 @@
-import { getDatabase, ref, push, get, child, set } from 'firebase/database'
+import {
+  getDatabase,
+  ref,
+  push,
+  get,
+  child,
+  set,
+  query,
+  equalTo,
+} from 'firebase/database'
 import { generateId } from '../utils/strings'
 import { toTimestamp } from '../utils/date'
 
@@ -44,4 +53,10 @@ export const getFromDatabase = async (
   } else {
     return null
   }
+}
+
+export const queryDatabase = async (key: string, filterByKey: string) => {
+  const data = query(ref(db, `/data/${key}`), equalTo(filterByKey))
+  console.log(data.toJSON())
+  return data
 }

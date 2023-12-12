@@ -54,7 +54,7 @@ export const updateTicket = async (
     })
     return true
   } catch (error) {
-    console.error(`Error creating ticket. Error: ${error}`)
+    console.error(`Error updating ticket. Error: ${error}`)
     return false
   }
 }
