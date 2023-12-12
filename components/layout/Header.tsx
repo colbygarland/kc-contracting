@@ -38,8 +38,8 @@ const AppMenuItem = ({
   const router = useRouter()
   const isCurrentPage = router.pathname === to
   const styles = isCurrentPage
-    ? 'text-sky-500 font-bold lg:text-sm'
-    : 'text-slate-500 font-normal hover:text-sky-400 transition duration-100 lg:text-sm'
+    ? 'text-sky-500 font-bold lg:text-lg'
+    : 'text-slate-500 font-normal hover:text-sky-400 transition duration-100 lg:text-lg'
 
   return (
     <Text fontSize="lg" fontWeight="bold" mb={4}>

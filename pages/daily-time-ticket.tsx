@@ -140,7 +140,7 @@ const Equipment = ({
   )
 }
 
-export default function EnterHours() {
+export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
   const session = useSession()
   const toast = useToast()
   const [loading, setLoading] = useState(false)
@@ -230,6 +230,7 @@ export default function EnterHours() {
       locations,
       equipment,
       approvedAt: '',
+      ticketNumber,
     }
 
     const ticketCreated = await createTicket(body)
@@ -272,6 +273,15 @@ export default function EnterHours() {
       <form onSubmit={onFormSubmit}>
         <input type="hidden" name="email" value={session.data!.user!.email!} />
         <input type="hidden" name="uid" value={'todo'} />
+        <FormGroup label="Ticket Number">
+          <Input
+            type="number"
+            name="ticketNumber"
+            defaultValue={ticketNumber}
+            value={ticketNumber}
+            readOnly
+          />
+        </FormGroup>
         <FormGroup label="Date" required>
           <Input type="date" name="ticketDate" defaultValue={today} required />
         </FormGroup>
@@ -339,4 +349,12 @@ export default function EnterHours() {
       {loading && <Loader />}
     </Page>
   )
+}
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      ticketNumber: 1,
+    },
+  }
 }
