@@ -1,6 +1,9 @@
+import { initFirebase } from '@/firebase'
 import { loginUser } from '@/src/auth'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+
+initFirebase()
 
 export default NextAuth({
   pages: {
