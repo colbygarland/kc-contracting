@@ -17,6 +17,12 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  useEffect(() => {
+    if (router.query.error === 'CredentialsSignin') {
+      setError('Please double check your credentials and try again.')
+    }
+  }, [router])
+
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -27,19 +33,6 @@ export default function Login() {
       password: password,
       callbackUrl: '/',
     })
-    // const { user, error } = await loginUser(email, password)
-    // if (user) {
-    //   setLoading(false)
-
-    // } else {
-    //   setLoading(false)
-    //   console.log(error)
-    //   if (error.code === loginErrorCodes.userNotFound) {
-    //     setError('User not found. Try creating an account first.')
-    //   } else {
-    //     setError('Please double check your credentials and try again.')
-    //   }
-    // }
   }
 
   return (
