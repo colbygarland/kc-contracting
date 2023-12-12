@@ -25,6 +25,9 @@ export const toTimestamp = (date: Date) => {
   return Math.floor(date.getTime())
 }
 
-export const fromTimestamp = (timestamp: number | string) => {
+export const fromTimestamp = (timestamp: number | string | undefined) => {
+  if (!timestamp) {
+    return ''
+  }
   return new Date(timestamp).toLocaleString()
 }

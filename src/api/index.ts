@@ -4,6 +4,8 @@ import { toTimestamp } from '../utils/date'
 
 const db = getDatabase()
 
+const LOG = true
+
 // Handles creating, updating, and deleting.
 // Send `null` data to delete.
 // Send an id to update/delete.
@@ -36,7 +38,9 @@ export const getFromDatabase = async (
 ): Promise<Record<string, unknown> | null> => {
   const snapshot = await get(child(ref(db), `/data/${key}`))
   if (snapshot.exists()) {
-    return snapshot.val()
+    const data = snapshot.val()
+    LOG && console.log(data)
+    return data
   } else {
     return null
   }

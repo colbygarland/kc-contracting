@@ -93,9 +93,15 @@ export const getAllTickets = async (): Promise<Array<Ticket>> => {
       return []
     }
 
-    return objectToArray<Ticket>(ticket, 'name')
+    return objectToArray<Ticket>(ticket, 'ticketDate', 'number')
   } catch (error) {
-    console.error(`Error getting all ticket. Error: ${error}`)
+    console.error(`Error getting all tickets. Error: ${error}`)
     return []
   }
+}
+
+// todo: write a more efficient version of this
+export const getAllTicketsForApproval = async (): Promise<Array<Ticket>> => {
+  const allTickets = await getAllTickets()
+  return allTickets.filter(ticket => !ticket.approvedAt)
 }

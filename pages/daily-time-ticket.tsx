@@ -235,6 +235,7 @@ export default function EnterHours() {
     if (ticketCreated) {
       toast(TOASTS.success)
       e.target.reset()
+      scrollTo(0, 0)
     } else {
       toast(TOASTS.error)
     }

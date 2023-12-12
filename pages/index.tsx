@@ -1,21 +1,29 @@
-import { Alert } from '@/components/Alert'
 import { H2 } from '@/components/Headings'
 import { Page } from '@/components/layout/Page'
+import { Ticket, getAllTicketsForApproval } from '@/src/api/ticket'
+import { isAdmin } from '@/src/auth/roles'
 import { store } from '@/src/store/store'
-import { getGreeting } from '@/src/utils/date'
+import { fromTimestamp } from '@/src/utils/date'
 import {
   Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
+  useDisclosure,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import {
   MdAssignmentAdd,
   MdAssignmentReturn,
@@ -25,65 +33,125 @@ import {
   MdSupervisorAccount,
 } from 'react-icons/md'
 
+const TicketsForApproval = () => {
+  const [tickets, setTickets] = useState<Array<Ticket>>([])
+  const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
+  useEffect(() => {
+    getAllTicketsForApproval().then(t => setTickets(t))
+  }, [])
+
+  // modal overlay that will show the ticket
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const approve = () => {
+    // set the ticket as approved
+    onClose()
+  }
+
+  const reject = () => {
+    // set the ticket as rejected
+    onClose()
+  }
+
+  return (
+    <>
+      <H2>Tickets to be Approved</H2>
+      <TableContainer>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th></Th>
+              <Th>Date</Th>
+              <Th>Email</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {tickets.map(t => (
+              <Tr key={t.uid}>
+                <Td>
+                  <Button
+                    onClick={() => {
+                      setCurrentTicket(t)
+                      onOpen()
+                    }}
+                  >
+                    <MdEditDocument />
+                  </Button>
+                </Td>
+                <Td>{fromTimestamp(t.ticketDate)}</Td>
+                <Td>{t.email}</Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+      <Modal isOpen={isOpen} onClose={onClose} size="full">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Approve Ticket</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <TableContainer mb={4}>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Date</Th>
+                    <Th>Company</Th>
+                    <Th>Email</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr>
+                    <Td>{fromTimestamp(currentTicket?.ticketDate)}</Td>
+                    <Td>{currentTicket?.company}</Td>
+                    <Td>{currentTicket?.email}</Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </TableContainer>
+            <TableContainer>
+              <Table size="sm">
+                <Thead>
+                  <Tr>
+                    <Th>Location</Th>
+                    <Th>Type</Th>
+                    <Th>Hours</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {currentTicket?.locations.map(location => (
+                    <Tr key={location.location}>
+                      <Td>{location.location}</Td>
+                      <Td>{location.chargeType}</Td>
+                      <Td>{location.hours}</Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="green" mr={3} onClick={approve}>
+              Approve
+            </Button>
+            <Button colorScheme="red" variant="outline" onClick={reject}>
+              Reject
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  )
+}
+
 export default function Index() {
-  const { user } = store
-  const greeting = getGreeting()
+  const adminUser = isAdmin()
 
   return (
     <Page title="Dashboard">
       <div className="lg:grid grid-cols-3 lg:gap-6">
         <div className="lg:col-span-2 mb-12 lg:mb-0">
-          <H2>Tickets to be Submitted</H2>
-          <TableContainer>
-            <Table variant="simple">
-              <Thead>
-                <Tr>
-                  <Th></Th>
-                  <Th>Date</Th>
-                  <Th>Company</Th>
-                  <Th>Location</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                <Tr>
-                  <Td>
-                    <Link href="/daily-time-ticket?id=fsdffgfdhhrew">
-                      <Button>
-                        <MdEditDocument />
-                      </Button>
-                    </Link>
-                  </Td>
-                  <Td>2023-09-08</Td>
-                  <Td>Birchcliff</Td>
-                  <Td>23-23-566-1</Td>
-                </Tr>
-                <Tr>
-                  <Td>
-                    <Link href="/daily-time-ticket?id=fsdffgfdhhrew">
-                      <Button>
-                        <MdEditDocument />
-                      </Button>
-                    </Link>
-                  </Td>
-                  <Td>2023-09-08</Td>
-                  <Td>Birchcliff</Td>
-                  <Td>23-23-566-1</Td>
-                </Tr>
-                <Tr>
-                  <Td>
-                    <Link href="/daily-time-ticket?id=fsdffgfdhhrew">
-                      <Button>
-                        <MdEditDocument />
-                      </Button>
-                    </Link>
-                  </Td>
-                  <Td>2023-09-08</Td>
-                  <Td>Birchcliff</Td>
-                  <Td>23-23-566-1</Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
+          {adminUser ? <TicketsForApproval /> : null}
         </div>
         <div className="lg:col-span-1">
           <div className="hidden lg:block">
