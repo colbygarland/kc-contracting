@@ -1,4 +1,4 @@
-import { initializeApp } from 'firebase/app'
+import * as fb from 'firebase/app'
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -14,7 +14,9 @@ export const initFirebase = () => {
   }
 
   // Initialize Firebase
-  const FIREBASE_APP = initializeApp(firebaseConfig)
+  const FIREBASE_APP = !fb.getApps().length
+    ? fb.initializeApp(firebaseConfig)
+    : fb.getApp()
 
   return FIREBASE_APP
 }
