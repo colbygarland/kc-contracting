@@ -24,7 +24,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaBars, FaGear } from 'react-icons/fa6'
 import { H1 } from '../Headings'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 const AppMenuItem = ({
   to,
@@ -56,18 +56,20 @@ const AppMenuItem = ({
 }
 
 const MenuItems = () => {
+  const session = useSession()
+  const adminUser = isAdmin(session?.data?.user?.email)
   return (
     <>
-      <AppMenuItem to="/">Home</AppMenuItem>
+      {adminUser && <AppMenuItem to="/">Home</AppMenuItem>}
       <AppMenuItem to="/daily-time-ticket">Daily Time Ticket</AppMenuItem>
       <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
-      <AppMenuItem to="/equipment">Equipment List</AppMenuItem>
-      <AppMenuItem to="/trucks-trailers">Truck List</AppMenuItem>
-      <AppMenuItem to="/permits">Permits</AppMenuItem>
-      <AppMenuItem to="/employee-info">Employee Info</AppMenuItem>
-      {isAdmin() && (
+      {adminUser && (
         <>
           <div className="bg-slate-100 h-1 mb-4" />
+          <AppMenuItem to="/equipment">Equipment List</AppMenuItem>
+          <AppMenuItem to="/trucks-trailers">Truck List</AppMenuItem>
+          <AppMenuItem to="/permits">Permits</AppMenuItem>
+          <AppMenuItem to="/employee-info">Employee Info</AppMenuItem>
           <AppMenuItem to="/admin/enter-equipment">Enter Equipment</AppMenuItem>
           <AppMenuItem to="/admin/enter-trucks">Enter Truck</AppMenuItem>
           <AppMenuItem to="/admin/enter-company">Enter Company</AppMenuItem>

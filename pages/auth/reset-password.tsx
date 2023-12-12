@@ -45,3 +45,5 @@ export default function ResetPassword() {
     </Layout>
   )
 }
+
+ResetPassword.auth = false

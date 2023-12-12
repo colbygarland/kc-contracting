@@ -8,8 +8,8 @@ initFirebase()
 export default NextAuth({
   pages: {
     signIn: '/auth/login',
-    newUser: '/auth/create-account',
   },
+
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. 'Sign in with...')

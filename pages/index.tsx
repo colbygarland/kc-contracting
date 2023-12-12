@@ -6,7 +6,6 @@ import {
   updateTicket,
 } from '@/src/api/ticket'
 import { isAdmin } from '@/src/auth/roles'
-import { store } from '@/src/store/store'
 import { fromTimestamp, toTimestamp } from '@/src/utils/date'
 import {
   Button,
@@ -26,17 +25,9 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react'
-import { useSession } from 'next-auth/react'
-import Link from 'next/link'
+import { getServerSession } from 'next-auth'
 import { useEffect, useState } from 'react'
-import {
-  MdAssignmentAdd,
-  MdAssignmentReturn,
-  MdArticle,
-  MdSafetyCheck,
-  MdEditDocument,
-  MdSupervisorAccount,
-} from 'react-icons/md'
+import { MdEditDocument } from 'react-icons/md'
 
 const TicketsForApproval = ({
   initialTickets,
@@ -240,64 +231,41 @@ export default function Index({
 }: {
   approvalTickets: Array<Ticket>
 }) {
-  const session = useSession()
-  const adminUser = isAdmin(session.data?.user?.email)
-
   return (
     <Page title="Dashboard">
-      <div className="lg:grid grid-cols-3 lg:gap-6">
-        <div className="lg:col-span-2 mb-12 lg:mb-0">
-          {adminUser ? (
-            <TicketsForApproval initialTickets={approvalTickets} />
-          ) : null}
-        </div>
-        <div className="lg:col-span-1">
-          <div className="hidden lg:block">
-            <H2>Quick Actions</H2>
-          </div>
-          <div className="grid grid-cols-2 gap-6 pb-6 mb-6 border-b-2 border-b-slate-50">
-            <Button>
-              <MdAssignmentAdd className="mr-2" /> Create Ticket
-            </Button>
-            <Button>
-              <MdAssignmentReturn className="mr-2" /> Edit Ticket
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-6 pb-6 mb-6 border-b-2 border-b-slate-50">
-            <Button>
-              <MdArticle className="mr-2" /> Equipment List
-            </Button>
-            <Button>
-              <MdArticle className="mr-2" /> Truck / Trailer
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-6 pb-6 mb-6 border-b-2 border-b-slate-50">
-            <Button>
-              <MdSafetyCheck className="mr-2" /> Safety Sheets
-            </Button>
-            <Button>
-              <MdEditDocument className="mr-2" /> Permits
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-6 pb-6 mb-6 border-b-2 border-b-slate-50">
-            <Button>
-              <MdSupervisorAccount className="mr-2" /> Employee Info
-            </Button>
-            <Button>
-              <MdSupervisorAccount className="mr-2" /> Practice Ticket
-            </Button>
-          </div>
-        </div>
-      </div>
+      <TicketsForApproval initialTickets={approvalTickets} />
     </Page>
   )
 }
 
-export async function getServerSideProps() {
+// @ts-ignore
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, {})
+  const adminUser = isAdmin(session?.user?.email)
   const approvalTickets = await getAllTicketsForApproval()
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/auth/login',
+        permanent: false,
+      },
+    }
+  }
+
+  if (!adminUser) {
+    return {
+      redirect: {
+        destination: '/daily-time-ticket',
+        permanent: false,
+      },
+    }
+  }
+
   return {
     props: {
       approvalTickets,
+      adminUser: isAdmin(session.user?.email),
     },
   }
 }

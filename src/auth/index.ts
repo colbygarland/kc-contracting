@@ -7,6 +7,7 @@ import {
   updateProfile,
   sendPasswordResetEmail,
 } from 'firebase/auth'
+import { signIn } from 'next-auth/react'
 
 // List of routes a user is allowed to see unauthorized
 export const unauthorizedRoutes = [
@@ -29,7 +30,11 @@ export const createUser = async (
     await updateProfile(resp.user, {
       displayName: name,
     })
-    set('user', resp.user)
+    await signIn('credentials', {
+      username: email,
+      password: password,
+      callbackUrl: '/',
+    })
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {
     console.error(
