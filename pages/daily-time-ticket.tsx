@@ -19,6 +19,7 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useState } from 'react'
 import { MdRemoveCircle } from 'react-icons/md'
@@ -49,7 +50,7 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
   return (
     <div className="grid grid-cols-3 gap-6">
       <div className="col-span-2">
-        <FormGroup label="Location">
+        <FormGroup label="Location" required>
           <InputGroup>
             <InputLeftAddon p={0}>
               <Select
@@ -69,8 +70,8 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
         </FormGroup>
       </div>
       <div className="col-span-1 flex items-center">
-        <FormGroup label="Hours">
-          <Input type="number" name="hoursAtLocation" />
+        <FormGroup label="Hours" required>
+          <Input type="number" name="hoursAtLocation" required />
         </FormGroup>
         {showRemoveButton && (
           <Button
@@ -140,7 +141,7 @@ const Equipment = ({
 }
 
 export default function EnterHours() {
-  const { user } = store
+  const session = useSession()
   const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [locations, setLocations] = useState([Location])
@@ -217,8 +218,8 @@ export default function EnterHours() {
     })
 
     const body: Ticket = {
-      uid: user.uid.get(),
-      email: user.email.get(),
+      uid: 'todo',
+      email: session?.data?.user?.email as string,
       ticketDate: formJson['ticketDate'].toString(),
       company: formJson['company'].toString(),
       labourHours: Number(formJson['labourHours']),
@@ -228,13 +229,14 @@ export default function EnterHours() {
       travelHours: Number(formJson['travelHours']),
       locations,
       equipment,
-      submittedAt: '',
+      approvedAt: '',
     }
 
-    console.log(body)
     const ticketCreated = await createTicket(body)
     if (ticketCreated) {
       toast(TOASTS.success)
+      e.target.reset()
+      scrollTo(0, 0)
     } else {
       toast(TOASTS.error)
     }
@@ -260,13 +262,16 @@ export default function EnterHours() {
     setEquipment([...e])
   }
 
+  if (session.status !== 'authenticated') {
+    return <Loader />
+  }
+
   return (
     <Page title="Daily Time Ticket">
       <H2>{title}</H2>
       <form onSubmit={onFormSubmit}>
-        <input type="hidden" name="email" value={user.email.get()} />
-        <input type="hidden" name="uid" value={user.uid.get()} />
-        <input type="hidden" name="name" value={user.displayName.get()} />
+        <input type="hidden" name="email" value={session.data!.user!.email!} />
+        <input type="hidden" name="uid" value={'todo'} />
         <FormGroup label="Date" required>
           <Input type="date" name="ticketDate" defaultValue={today} required />
         </FormGroup>

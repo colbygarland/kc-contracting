@@ -49,7 +49,6 @@ export const loginUser = async (
   const auth = getAuth()
   try {
     const resp = await signInWithEmailAndPassword(auth, email, password)
-    set('user', resp.user)
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {
     console.error(

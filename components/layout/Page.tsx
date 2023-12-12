@@ -2,6 +2,8 @@ import { Container } from '@chakra-ui/react'
 import { Header } from './Header'
 import { H1 } from '../Headings'
 import { useUser } from '@/src/hooks/useUser/useUser'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 
 export const Page = ({
   title,
@@ -10,11 +12,6 @@ export const Page = ({
   title: string
   children: React.ReactNode
 }) => {
-  const user = useUser()
-  if (!user) {
-    return null
-  }
-
   return (
     <main className="lg:mt-16">
       <Header title={title} />

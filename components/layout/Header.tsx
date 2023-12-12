@@ -22,8 +22,9 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaBars } from 'react-icons/fa6'
+import { FaBars, FaGear } from 'react-icons/fa6'
 import { H1 } from '../Headings'
+import { signOut } from 'next-auth/react'
 
 const AppMenuItem = ({
   to,
@@ -95,12 +96,11 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
 }
 
 const UserButton = () => {
-  const { user } = store
-  const initials = getInitials(user.displayName.get())
-
   return (
     <Menu>
-      <MenuButton as={Button}>{initials}</MenuButton>
+      <MenuButton as={Button}>
+        <FaGear />
+      </MenuButton>
       <MenuList color="black">
         <MenuItem>
           <Link className="block" href="/employee-info">
@@ -108,7 +108,7 @@ const UserButton = () => {
           </Link>
         </MenuItem>
         <MenuItem>
-          <Link href="/auth/logout">Logout</Link>
+          <Button onClick={() => signOut()}>Logout</Button>
         </MenuItem>
       </MenuList>
     </Menu>

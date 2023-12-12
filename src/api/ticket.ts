@@ -27,8 +27,8 @@ export interface Ticket {
   updatedAt?: string
   // If this is set, consider the ticket deleted
   deletedAt?: string | null
-  // if set, tells the user this ticket is "submitted"
-  submittedAt?: string
+  // If this is set, consider the ticket approved and don't show it anymore to the user
+  approvedAt?: string
 }
 
 const PATH = 'tickets'
@@ -54,7 +54,7 @@ export const updateTicket = async (
     })
     return true
   } catch (error) {
-    console.error(`Error creating ticket. Error: ${error}`)
+    console.error(`Error updating ticket. Error: ${error}`)
     return false
   }
 }
@@ -93,9 +93,15 @@ export const getAllTickets = async (): Promise<Array<Ticket>> => {
       return []
     }
 
-    return objectToArray<Ticket>(ticket, 'name')
+    return objectToArray<Ticket>(ticket, 'ticketDate', 'number')
   } catch (error) {
-    console.error(`Error getting all ticket. Error: ${error}`)
+    console.error(`Error getting all tickets. Error: ${error}`)
     return []
   }
+}
+
+// todo: write a more efficient version of this
+export const getAllTicketsForApproval = async (): Promise<Array<Ticket>> => {
+  const allTickets = await getAllTickets()
+  return allTickets.filter(ticket => !ticket.approvedAt)
 }
