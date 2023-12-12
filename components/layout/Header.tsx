@@ -61,7 +61,8 @@ const MenuItems = () => {
   return (
     <>
       {adminUser && <AppMenuItem to="/">Home</AppMenuItem>}
-      <AppMenuItem to="/daily-time-ticket">Daily Time Ticket</AppMenuItem>
+      <AppMenuItem to="/daily-time-ticket">Create Ticket</AppMenuItem>
+      <AppMenuItem to="/tickets">View Tickets</AppMenuItem>
       <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
       {adminUser && (
         <>
