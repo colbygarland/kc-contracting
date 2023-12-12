@@ -49,7 +49,7 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
   return (
     <div className="grid grid-cols-3 gap-6">
       <div className="col-span-2">
-        <FormGroup label="Location">
+        <FormGroup label="Location" required>
           <InputGroup>
             <InputLeftAddon p={0}>
               <Select
@@ -69,8 +69,8 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
         </FormGroup>
       </div>
       <div className="col-span-1 flex items-center">
-        <FormGroup label="Hours">
-          <Input type="number" name="hoursAtLocation" />
+        <FormGroup label="Hours" required>
+          <Input type="number" name="hoursAtLocation" required />
         </FormGroup>
         {showRemoveButton && (
           <Button
@@ -228,13 +228,13 @@ export default function EnterHours() {
       travelHours: Number(formJson['travelHours']),
       locations,
       equipment,
-      submittedAt: '',
+      approvedAt: '',
     }
 
-    console.log(body)
     const ticketCreated = await createTicket(body)
     if (ticketCreated) {
       toast(TOASTS.success)
+      e.target.reset()
     } else {
       toast(TOASTS.error)
     }

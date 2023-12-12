@@ -27,8 +27,8 @@ export interface Ticket {
   updatedAt?: string
   // If this is set, consider the ticket deleted
   deletedAt?: string | null
-  // if set, tells the user this ticket is "submitted"
-  submittedAt?: string
+  // If this is set, consider the ticket approved and don't show it anymore to the user
+  approvedAt?: string
 }
 
 const PATH = 'tickets'
