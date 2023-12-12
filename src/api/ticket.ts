@@ -29,6 +29,7 @@ export interface Ticket {
   deletedAt?: string | null
   // If this is set, consider the ticket approved and don't show it anymore to the user
   approvedAt?: string
+  ticketNumber: number
 }
 
 const PATH = 'tickets'
