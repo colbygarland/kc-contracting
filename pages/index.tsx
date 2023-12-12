@@ -243,8 +243,6 @@ export default function Index({
   const session = useSession()
   const adminUser = isAdmin(session.data?.user?.email)
 
-  console.log('approvalTickets', approvalTickets)
-
   return (
     <Page title="Dashboard">
       <div className="lg:grid grid-cols-3 lg:gap-6">
