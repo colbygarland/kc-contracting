@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Alert } from '@/components/Alert'
+import { signIn } from 'next-auth/react'
 
 export default function Login() {
   const router = useRouter()
@@ -16,31 +17,29 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const user = get('user')
-    if (user) {
-      router.replace('/')
-    }
-  }, [router])
-
   const handleSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     setError('')
     setLoading(true)
-    const { user, error } = await loginUser(email, password)
-    if (user) {
-      router.replace('/')
-      setLoading(false)
-    } else {
-      setLoading(false)
-      console.log(error)
-      if (error.code === loginErrorCodes.userNotFound) {
-        setError('User not found. Try creating an account first.')
-      } else {
-        setError('Please double check your credentials and try again.')
-      }
-    }
+    signIn('credentials', {
+      username: email,
+      password: password,
+      callbackUrl: '/',
+    })
+    // const { user, error } = await loginUser(email, password)
+    // if (user) {
+    //   setLoading(false)
+
+    // } else {
+    //   setLoading(false)
+    //   console.log(error)
+    //   if (error.code === loginErrorCodes.userNotFound) {
+    //     setError('User not found. Try creating an account first.')
+    //   } else {
+    //     setError('Please double check your credentials and try again.')
+    //   }
+    // }
   }
 
   return (
@@ -79,3 +78,5 @@ export default function Login() {
     </Layout>
   )
 }
+
+Login.auth = false

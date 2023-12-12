@@ -22,6 +22,7 @@ import {
   Tr,
   useDisclosure,
 } from '@chakra-ui/react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import {
@@ -145,7 +146,8 @@ const TicketsForApproval = () => {
 }
 
 export default function Index() {
-  const adminUser = isAdmin()
+  const session = useSession()
+  const adminUser = isAdmin(session.data?.user?.email)
 
   return (
     <Page title="Dashboard">
@@ -194,3 +196,5 @@ export default function Index() {
     </Page>
   )
 }
+
+Index.auth = true
