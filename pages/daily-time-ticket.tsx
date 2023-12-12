@@ -219,7 +219,7 @@ export default function EnterHours() {
 
     const body: Ticket = {
       uid: 'todo',
-      email: session.data!.user!.email!,
+      email: session?.data?.user?.email as string,
       ticketDate: formJson['ticketDate'].toString(),
       company: formJson['company'].toString(),
       labourHours: Number(formJson['labourHours']),
