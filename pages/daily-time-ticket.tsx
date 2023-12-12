@@ -262,6 +262,10 @@ export default function EnterHours() {
     setEquipment([...e])
   }
 
+  if (session.status !== 'authenticated') {
+    return <Loader />
+  }
+
   return (
     <Page title="Daily Time Ticket">
       <H2>{title}</H2>
