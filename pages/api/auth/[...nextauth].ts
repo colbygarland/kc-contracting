@@ -3,8 +3,6 @@ import { loginUser } from '@/src/auth'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-initFirebase()
-
 export default NextAuth({
   pages: {
     signIn: '/auth/login',
@@ -24,6 +22,7 @@ export default NextAuth({
       },
       // @ts-expect-error
       async authorize(credentials, req) {
+        initFirebase()
         // You need to provide your own logic here that takes the credentials
         // submitted and returns either a object representing a user or value
         // that is false/null if the credentials are invalid.
