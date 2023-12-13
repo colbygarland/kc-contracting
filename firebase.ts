@@ -14,9 +14,8 @@ export const initFirebase = () => {
   }
 
   // Initialize Firebase
-  const FIREBASE_APP = !fb.getApps().length
-    ? fb.initializeApp(firebaseConfig)
-    : fb.getApp()
+  const FIREBASE_APP =
+    fb.getApps().length === 0 ? fb.initializeApp(firebaseConfig) : fb.getApp()
 
   return FIREBASE_APP
 }
