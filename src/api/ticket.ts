@@ -147,7 +147,7 @@ export const getAllTickets = async (email?: string): Promise<Array<Ticket>> => {
 
     const ticketsAsArray = objectToArray<Ticket>(
       tickets,
-      'ticketDate',
+      'ticketNumber',
       'number',
     )
 

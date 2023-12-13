@@ -44,6 +44,7 @@ export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
             <Tr>
               <Td>{currentTicket?.phone}</Td>
               <Td>{currentTicket?.email}</Td>
+              <Td></Td>
             </Tr>
           </Tbody>
         </Table>
