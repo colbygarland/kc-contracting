@@ -7,13 +7,9 @@ import {
 } from 'firebase/auth'
 import { signIn } from 'next-auth/react'
 import { upsertUserMeta } from '../api/users'
+import { initFirebase } from '@/firebase'
 
-// List of routes a user is allowed to see unauthorized
-export const unauthorizedRoutes = [
-  '/auth/create-account',
-  '/auth/login',
-  '/auth/reset-password',
-]
+initFirebase()
 
 export const createUser = async (
   email: string,
@@ -27,11 +23,11 @@ export const createUser = async (
   const auth = getAuth()
   try {
     const resp = await createUserWithEmailAndPassword(auth, email, password)
-    // await upsertUserMeta({
-    //   email,
-    //   name,
-    //   phone,
-    // })
+    await upsertUserMeta({
+      email,
+      name,
+      phone,
+    })
     await signIn('credentials', {
       username: email,
       password: password,
