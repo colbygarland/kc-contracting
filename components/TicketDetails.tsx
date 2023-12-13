@@ -17,16 +17,51 @@ export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
         <Table size="sm" layout="fixed">
           <Thead>
             <Tr>
+              <Th>Name</Th>
+              <Th></Th>
+              <Th></Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Td>{currentTicket?.name}</Td>
+              <Td></Td>
+              <Td></Td>
+            </Tr>
+          </Tbody>
+        </Table>
+      </TableContainer>
+      <TableContainer mb={4}>
+        <Table size="sm" layout="fixed">
+          <Thead>
+            <Tr>
+              <Th>Phone</Th>
+              <Th>Email</Th>
+              <Th></Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Td>{currentTicket?.phone}</Td>
+              <Td>{currentTicket?.email}</Td>
+            </Tr>
+          </Tbody>
+        </Table>
+      </TableContainer>
+      <TableContainer mb={4}>
+        <Table size="sm" layout="fixed">
+          <Thead>
+            <Tr>
               <Th>Date</Th>
               <Th>Company</Th>
-              <Th>Email</Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
             <Tr>
               <Td>{fromTimestamp(currentTicket?.ticketDate)}</Td>
               <Td>{currentTicket?.company}</Td>
-              <Td>{currentTicket?.email}</Td>
+              <Td></Td>
             </Tr>
           </Tbody>
         </Table>
