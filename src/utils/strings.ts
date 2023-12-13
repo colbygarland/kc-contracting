@@ -10,3 +10,11 @@ export const getInitials = (name: string): string => {
 export const generateId = (seed: string) => {
   return MurmurHash3(seed).result().toString()
 }
+
+export const encodeEmail = (email: string) => {
+  return email.replaceAll('.', '_____')
+}
+
+export const decodeEmail = (email: string) => {
+  return email.replaceAll('_____', '.')
+}

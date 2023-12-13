@@ -29,5 +29,5 @@ export const fromTimestamp = (timestamp: number | string | undefined) => {
   if (!timestamp) {
     return ''
   }
-  return new Date(timestamp).toLocaleString()
+  return new Date(timestamp).toLocaleString().split(',')[0]
 }
