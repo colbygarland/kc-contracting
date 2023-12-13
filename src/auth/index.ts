@@ -6,8 +6,7 @@ import {
   sendPasswordResetEmail,
 } from 'firebase/auth'
 import { signIn } from 'next-auth/react'
-import { upsertUserMeta } from '../api/users'
-import { initFirebase } from '@/firebase'
+import { set } from '../utils/persist'
 
 export const createUser = async (
   email: string,
@@ -21,15 +20,16 @@ export const createUser = async (
   const auth = getAuth()
   try {
     const resp = await createUserWithEmailAndPassword(auth, email, password)
-    // await upsertUserMeta({
-    //   email,
-    //   name,
-    //   phone,
-    // })
     await signIn('credentials', {
       username: email,
       password: password,
       callbackUrl: '/',
+    })
+    // set usermeta to be saved later
+    set('userMeta', {
+      name,
+      email,
+      phone,
     })
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {

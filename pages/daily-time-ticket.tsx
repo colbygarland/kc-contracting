@@ -11,9 +11,11 @@ import {
   getLastTicketCreated,
 } from '@/src/api/ticket'
 import { Truck, getAllTrucks } from '@/src/api/trucks'
+import { UserMeta, upsertUserMeta } from '@/src/api/users'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
 import { getCurrentDate } from '@/src/utils/date'
+import { get } from '@/src/utils/persist'
 import {
   Button,
   Input,
@@ -25,7 +27,7 @@ import {
 } from '@chakra-ui/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { MdRemoveCircle } from 'react-icons/md'
 
 const CHARGE_TO: Array<ChargeType> = ['PO #', 'LSD', 'Job #']
@@ -164,6 +166,14 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
   const updateTicket = 'id' in router.query
   const title = updateTicket ? 'Edit ticket' : 'Create ticket'
   const buttonText = updateTicket ? 'Update ticket' : 'Create ticket'
+
+  // todo: think of a better way to do this
+  useEffect(() => {
+    const userMeta = get('userMeta')
+    if (userMeta) {
+      upsertUserMeta(userMeta as UserMeta)
+    }
+  }, [])
 
   const onFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault()
