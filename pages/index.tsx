@@ -76,6 +76,7 @@ const TicketsForApproval = ({
               <Thead>
                 <Tr>
                   <Th></Th>
+                  <Th>Ticket Number</Th>
                   <Th>Date</Th>
                   <Th>Email</Th>
                 </Tr>
@@ -96,6 +97,7 @@ const TicketsForApproval = ({
                         <MdEditDocument />
                       </Button>
                     </Td>
+                    <Td>{t.ticketNumber}</Td>
                     <Td>{fromTimestamp(t.ticketDate)}</Td>
                     <Td>{t.email}</Td>
                   </Tr>
