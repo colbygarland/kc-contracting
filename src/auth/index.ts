@@ -27,11 +27,11 @@ export const createUser = async (
   const auth = getAuth()
   try {
     const resp = await createUserWithEmailAndPassword(auth, email, password)
-    await upsertUserMeta({
-      email,
-      name,
-      phone,
-    })
+    // await upsertUserMeta({
+    //   email,
+    //   name,
+    //   phone,
+    // })
     await signIn('credentials', {
       username: email,
       password: password,
