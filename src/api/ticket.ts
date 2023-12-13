@@ -136,16 +136,29 @@ export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
 export const getAllTickets = async (email?: string): Promise<Array<Ticket>> => {
   try {
     const path = email ? PATH(email) : 'tickets'
-    let ticket = await getFromDatabase(path)
-    if (!ticket) {
+    let tickets = await getFromDatabase(path)
+    if (!tickets) {
       return []
     }
 
     if (!email) {
-      ticket = flattenObject(ticket)
+      tickets = flattenObject(tickets)
     }
 
-    return objectToArray<Ticket>(ticket, 'ticketDate', 'number')
+    const ticketsAsArray = objectToArray<Ticket>(
+      tickets,
+      'ticketDate',
+      'number',
+    )
+
+    let index = 0
+    for (const ticket of ticketsAsArray) {
+      const comp = await getCompany(ticket.company)
+      ticketsAsArray[index].company = comp?.name || '-'
+      index++
+    }
+
+    return ticketsAsArray
   } catch (error) {
     console.error(`Error getting all tickets. Error: ${error}`)
     return []

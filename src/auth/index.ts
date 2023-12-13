@@ -19,6 +19,7 @@ export const createUser = async (
   email: string,
   password: string,
   name: string,
+  phone: string,
 ): Promise<{
   user: User | null
   error: { code: string | null; message: string | null }
@@ -29,6 +30,7 @@ export const createUser = async (
     await upsertUserMeta({
       email,
       name,
+      phone,
     })
     await signIn('credentials', {
       username: email,
