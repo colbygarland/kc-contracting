@@ -13,7 +13,7 @@ import { toTimestamp } from '../utils/date'
 
 const db = getDatabase()
 
-const LOG = true
+const LOG = process.env.NODE_ENV === 'development'
 
 // Handles creating, updating, and deleting.
 // Send `null` data to delete.
@@ -28,7 +28,7 @@ export const writeToDatabase = async ({
   id?: string
 }): Promise<void> => {
   const now = toTimestamp(new Date())
-  const generatedId = id ? id : generateId(JSON.stringify(data))
+  const generatedId = id ? id : now
   set(ref(db, `/data/${path}/${generatedId}`), {
     ...data,
     ...(data && {

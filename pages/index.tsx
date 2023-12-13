@@ -99,7 +99,9 @@ const TicketsForApproval = ({
           <Modal isOpen={isOpen} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Approve Ticket</ModalHeader>
+              <ModalHeader>
+                Approve Ticket #{currentTicket?.ticketNumber}
+              </ModalHeader>
               <ModalCloseButton />
               <ModalBody>
                 <TicketDetails currentTicket={currentTicket!} />

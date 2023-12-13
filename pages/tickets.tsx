@@ -19,7 +19,7 @@ import {
   ModalFooter,
   ModalOverlay,
 } from '@chakra-ui/react'
-import { reject } from 'cypress/types/bluebird'
+import { getServerSession } from 'next-auth'
 import { useState } from 'react'
 import { MdEditDocument } from 'react-icons/md'
 
@@ -63,7 +63,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
       <Modal isOpen={isOpen} onClose={onClose} size="full">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Ticket</ModalHeader>
+          <ModalHeader>Ticket #{currentTicket?.ticketNumber}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <TicketDetails currentTicket={currentTicket!} />
@@ -79,8 +79,10 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
   )
 }
 
-export async function getServerSideProps() {
-  const tickets = await getAllTickets()
+// @ts-ignore
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, {})
+  const tickets = await getAllTickets(session?.user?.email as string)
   return {
     props: {
       tickets,

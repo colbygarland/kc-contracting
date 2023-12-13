@@ -4,7 +4,12 @@ import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { Company, getAllCompanies } from '@/src/api/companies'
 import { Equipment as IEquipment, getAllEquipment } from '@/src/api/equipment'
-import { ChargeType, Ticket, createTicket } from '@/src/api/ticket'
+import {
+  ChargeType,
+  Ticket,
+  createTicket,
+  getLastTicketCreated,
+} from '@/src/api/ticket'
 import { Truck, getAllTrucks } from '@/src/api/trucks'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
@@ -273,15 +278,6 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
       <form onSubmit={onFormSubmit}>
         <input type="hidden" name="email" value={session.data!.user!.email!} />
         <input type="hidden" name="uid" value={'todo'} />
-        <FormGroup label="Ticket Number">
-          <Input
-            type="number"
-            name="ticketNumber"
-            defaultValue={ticketNumber}
-            value={ticketNumber}
-            readOnly
-          />
-        </FormGroup>
         <FormGroup label="Date" required>
           <Input type="date" name="ticketDate" defaultValue={today} required />
         </FormGroup>
@@ -352,9 +348,12 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
 }
 
 export async function getServerSideProps() {
+  const ticket = await getLastTicketCreated()
+  const ticketNumber = ticket ? ticket.ticketNumber + 1 : 1
+
   return {
     props: {
-      ticketNumber: 1,
+      ticketNumber,
     },
   }
 }
