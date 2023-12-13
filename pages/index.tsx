@@ -1,9 +1,11 @@
 import { H2 } from '@/components/Headings'
+import { Loader } from '@/components/Loader'
 import { TicketDetails } from '@/components/TicketDetails'
 import { Page } from '@/components/layout/Page'
 import {
   Ticket,
   getAllTicketsForApproval,
+  getTicket,
   updateTicket,
 } from '@/src/api/ticket'
 import { isAdmin } from '@/src/auth/roles'
@@ -37,6 +39,7 @@ const TicketsForApproval = ({
 }) => {
   const [tickets, setTickets] = useState<Array<Ticket>>(initialTickets)
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     getAllTicketsForApproval().then(t => setTickets(t))
@@ -62,6 +65,7 @@ const TicketsForApproval = ({
 
   return (
     <>
+      {loading && <Loader />}
       <H2>Tickets to be Approved</H2>
       {tickets.length === 0 ? (
         'There are currently no tickets to approve. 🎉'
@@ -81,9 +85,12 @@ const TicketsForApproval = ({
                   <Tr key={t.uid}>
                     <Td>
                       <Button
-                        onClick={() => {
-                          setCurrentTicket(t)
+                        onClick={async () => {
+                          setLoading(true)
+                          const ticket = await getTicket(t)
+                          setCurrentTicket(ticket)
                           onOpen()
+                          setLoading(false)
                         }}
                       >
                         <MdEditDocument />

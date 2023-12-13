@@ -1,6 +1,7 @@
+import { Loader } from '@/components/Loader'
 import { TicketDetails } from '@/components/TicketDetails'
 import { Page } from '@/components/layout/Page'
-import { Ticket, getAllTickets } from '@/src/api/ticket'
+import { Ticket, getAllTickets, getTicket } from '@/src/api/ticket'
 import {
   Button,
   TableContainer,
@@ -25,10 +26,12 @@ import { MdEditDocument } from 'react-icons/md'
 
 export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
+  const [loading, setLoading] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <Page title="Tickets">
+      {loading && <Loader />}
       <TableContainer>
         <Table layout="fixed">
           <Thead>
@@ -47,8 +50,11 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                 <Td>{ticket.company}</Td>
                 <Td>
                   <Button
-                    onClick={() => {
-                      setCurrentTicket(ticket)
+                    onClick={async () => {
+                      setLoading(true)
+                      const t = await getTicket(ticket)
+                      setCurrentTicket(t)
+                      setLoading(false)
                       onOpen()
                     }}
                   >

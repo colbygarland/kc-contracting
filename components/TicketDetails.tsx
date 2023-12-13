@@ -63,7 +63,7 @@ export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
           <Tbody>
             {currentTicket?.equipment.map(e => (
               <Tr key={e.id}>
-                <Td>{e.id}</Td>
+                <Td>{e.name}</Td>
                 <Td>{e.attachment || '-'}</Td>
                 <Td>{e.hours}</Td>
               </Tr>

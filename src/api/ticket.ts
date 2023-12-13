@@ -2,6 +2,9 @@ import { write } from 'fs'
 import { getFromDatabase, writeToDatabase } from '.'
 import { objectToArray } from '../utils/arrays'
 import { useSession } from 'next-auth/react'
+import { getCompany } from './companies'
+import { getEquipment } from './equipment'
+import { getTruck } from './trucks'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
@@ -15,6 +18,7 @@ export interface Ticket {
     hours?: number
   }>
   equipment: Array<{
+    name?: string
     id: string
     hours: number
     attachment?: string
@@ -94,10 +98,35 @@ export const deleteTicket = async (ticket: Ticket) => {
 
 export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
   try {
-    const t = await getFromDatabase(`${PATH(ticket.email)}/${ticket.id}`)
+    let t = await getFromDatabase(`${PATH(ticket.email)}/${ticket.id}`)
     if (!t) {
       return null
     }
+
+    // go through and map the keys to their proper names for equipment, company, etc.
+    let index = 0
+    // @ts-ignore
+    for (const equipment of t.equipment) {
+      const [eq, attachment] = await Promise.all([
+        getEquipment(equipment.id),
+        getEquipment(equipment.attachment),
+      ])
+      // @ts-ignore
+      t.equipment[index].name = eq.name
+      // @ts-ignore
+      t.equipment[index].attachment = attachment.name
+      index++
+    }
+
+    const [company, truck, trailer] = await Promise.all([
+      getCompany(t.company as string),
+      getTruck(t.truck as string),
+      getEquipment(t.trailer as string),
+    ])
+    t.company = company?.name
+    t.truck = truck?.name
+    t.trailer = trailer?.name
+
     return t as unknown as Ticket
   } catch (error) {
     console.error(`Error creating ticket. Error: ${error}`)
