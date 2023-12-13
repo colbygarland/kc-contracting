@@ -7,5 +7,7 @@ export default withAuth({
 })
 
 export const config = {
-  matcher: ['/((?!auth|_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!auth|_next/static|_next/image|favicon.ico|sentry-example-page|api/sentry-example-api).*)',
+  ],
 }
