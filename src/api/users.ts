@@ -1,4 +1,5 @@
 import { getFromDatabase, writeToDatabase } from '.'
+import { objectToArray } from '../utils/arrays'
 import { encodeEmail } from '../utils/strings'
 
 export type UserMeta = {
@@ -32,5 +33,19 @@ export const getUserMeta = async (email: string): Promise<UserMeta | null> => {
   } catch (error) {
     console.error(`Error getting usermeta. Error: ${error}`)
     return null
+  }
+}
+
+export const getAllUserMeta = async (): Promise<Array<UserMeta>> => {
+  try {
+    const users = await getFromDatabase(PATH)
+    if (!users) {
+      return []
+    }
+
+    return objectToArray<UserMeta>(users, 'name')
+  } catch (error) {
+    console.error(`Error getting all users. Error: ${error}`)
+    return []
   }
 }
