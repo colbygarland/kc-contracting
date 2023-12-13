@@ -88,3 +88,6 @@ export default function CreateAccount() {
     </Layout>
   )
 }
+
+CreateAccount.auth = false
+CreateAccount.displayName = 'create-account'

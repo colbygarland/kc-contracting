@@ -1,5 +1,10 @@
+import { write } from 'fs'
 import { getFromDatabase, writeToDatabase } from '.'
 import { objectToArray } from '../utils/arrays'
+import { useSession } from 'next-auth/react'
+import { getCompany } from './companies'
+import { getEquipment } from './equipment'
+import { getTruck } from './trucks'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
@@ -13,6 +18,7 @@ export interface Ticket {
     hours?: number
   }>
   equipment: Array<{
+    name?: string
     id: string
     hours: number
     attachment?: string
@@ -29,13 +35,30 @@ export interface Ticket {
   deletedAt?: string | null
   // If this is set, consider the ticket approved and don't show it anymore to the user
   approvedAt?: string
+  ticketNumber: number
 }
 
-const PATH = 'tickets'
+const encodeEmail = (email: string) => {
+  return email.replaceAll('.', '_____')
+}
+
+const decodeEmail = (email: string) => {
+  return email.replaceAll('_____', '.')
+}
+
+const PATH = (email: string) => {
+  return `tickets/${encodeEmail(email)}`
+}
 
 export const createTicket = async (ticket: Ticket): Promise<boolean> => {
   try {
-    await writeToDatabase({ data: ticket, path: PATH })
+    await writeToDatabase({ data: ticket, path: PATH(ticket.email) })
+    // update the last created ticket
+    await writeToDatabase({
+      data: ticket,
+      path: '/lastCreatedTicket',
+      id: 'lastCreatedTicket',
+    })
     return true
   } catch (error) {
     console.error(`Error creating ticket. Error: ${error}`)
@@ -49,7 +72,7 @@ export const updateTicket = async (
   try {
     await writeToDatabase({
       data: ticket,
-      path: PATH,
+      path: PATH(ticket.email as string),
       id: ticket.id as string,
     })
     return true
@@ -59,12 +82,12 @@ export const updateTicket = async (
   }
 }
 
-export const deleteTicket = async (ticketId: string) => {
+export const deleteTicket = async (ticket: Ticket) => {
   try {
     await writeToDatabase({
       data: null,
-      path: PATH,
-      id: ticketId,
+      path: PATH(ticket.email),
+      id: ticket.id,
     })
     return true
   } catch (error) {
@@ -73,24 +96,54 @@ export const deleteTicket = async (ticketId: string) => {
   }
 }
 
-export const getTicket = async (ticketId: string): Promise<Ticket | null> => {
+export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
   try {
-    const ticket = await getFromDatabase(`${PATH}/${ticketId}`)
-    if (!ticket) {
+    let t = await getFromDatabase(`${PATH(ticket.email)}/${ticket.id}`)
+    if (!t) {
       return null
     }
-    return ticket as unknown as Ticket
+
+    // go through and map the keys to their proper names for equipment, company, etc.
+    let index = 0
+    // @ts-ignore
+    for (const equipment of t.equipment) {
+      const [eq, attachment] = await Promise.all([
+        getEquipment(equipment.id),
+        getEquipment(equipment.attachment),
+      ])
+      // @ts-ignore
+      t.equipment[index].name = eq.name
+      // @ts-ignore
+      t.equipment[index].attachment = attachment.name
+      index++
+    }
+
+    const [company, truck, trailer] = await Promise.all([
+      getCompany(t.company as string),
+      getTruck(t.truck as string),
+      getEquipment(t.trailer as string),
+    ])
+    t.company = company?.name
+    t.truck = truck?.name
+    t.trailer = trailer?.name
+
+    return t as unknown as Ticket
   } catch (error) {
     console.error(`Error creating ticket. Error: ${error}`)
     return null
   }
 }
 
-export const getAllTickets = async (): Promise<Array<Ticket>> => {
+export const getAllTickets = async (email?: string): Promise<Array<Ticket>> => {
   try {
-    const ticket = await getFromDatabase(PATH)
+    const path = email ? PATH(email) : 'tickets'
+    let ticket = await getFromDatabase(path)
     if (!ticket) {
       return []
+    }
+
+    if (!email) {
+      ticket = flattenObject(ticket)
     }
 
     return objectToArray<Ticket>(ticket, 'ticketDate', 'number')
@@ -100,8 +153,31 @@ export const getAllTickets = async (): Promise<Array<Ticket>> => {
   }
 }
 
+const flattenObject = (obj: Record<string, any>) => {
+  const result = {}
+
+  for (const email in obj) {
+    const tickets = obj[email]
+
+    for (const ticketId in tickets) {
+      // @ts-expect-error
+      result[ticketId] = tickets[ticketId]
+    }
+  }
+
+  return result
+}
+
 // todo: write a more efficient version of this
 export const getAllTicketsForApproval = async (): Promise<Array<Ticket>> => {
   const allTickets = await getAllTickets()
   return allTickets.filter(ticket => !ticket.approvedAt)
+}
+
+export const getLastTicketCreated = async (): Promise<Ticket | null> => {
+  const ticket = await getFromDatabase('lastCreatedTicket/lastCreatedTicket')
+  if (ticket) {
+    return ticket as unknown as Ticket
+  }
+  return null
 }

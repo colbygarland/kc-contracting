@@ -1,5 +1,4 @@
 import { initFirebase } from '@/firebase'
-import { useAuthentication } from '@/src/hooks/useAuthentication'
 import '@/styles/globals.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
@@ -19,8 +18,6 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  // useAuthentication()
-
   return (
     <SessionProvider session={session}>
       <Head>
@@ -44,7 +41,7 @@ export default function App({
 
 function Auth({ children }: { children: React.ReactNode }) {
   // if `{ required: true }` is supplied, `status` can only be "loading" or "authenticated"
-  const { status } = useSession({ required: true })
+  const { status } = useSession()
 
   if (status === 'loading') {
     return <Loader />

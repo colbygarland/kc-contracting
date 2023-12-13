@@ -4,7 +4,12 @@ import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { Company, getAllCompanies } from '@/src/api/companies'
 import { Equipment as IEquipment, getAllEquipment } from '@/src/api/equipment'
-import { ChargeType, Ticket, createTicket } from '@/src/api/ticket'
+import {
+  ChargeType,
+  Ticket,
+  createTicket,
+  getLastTicketCreated,
+} from '@/src/api/ticket'
 import { Truck, getAllTrucks } from '@/src/api/trucks'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
@@ -140,7 +145,7 @@ const Equipment = ({
   )
 }
 
-export default function EnterHours() {
+export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
   const session = useSession()
   const toast = useToast()
   const [loading, setLoading] = useState(false)
@@ -230,6 +235,7 @@ export default function EnterHours() {
       locations,
       equipment,
       approvedAt: '',
+      ticketNumber,
     }
 
     const ticketCreated = await createTicket(body)
@@ -339,4 +345,15 @@ export default function EnterHours() {
       {loading && <Loader />}
     </Page>
   )
+}
+
+export async function getServerSideProps() {
+  const ticket = await getLastTicketCreated()
+  const ticketNumber = ticket ? ticket.ticketNumber + 1 : 1
+
+  return {
+    props: {
+      ticketNumber,
+    },
+  }
 }
