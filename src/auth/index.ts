@@ -1,12 +1,13 @@
+import { set } from '@/src/utils/persist'
 import {
   getAuth,
   createUserWithEmailAndPassword,
   User,
   signInWithEmailAndPassword,
+  updateProfile,
   sendPasswordResetEmail,
 } from 'firebase/auth'
 import { signIn } from 'next-auth/react'
-import { upsertUserMeta } from '../api/users'
 
 // List of routes a user is allowed to see unauthorized
 export const unauthorizedRoutes = [
@@ -19,7 +20,6 @@ export const createUser = async (
   email: string,
   password: string,
   name: string,
-  phone: string,
 ): Promise<{
   user: User | null
   error: { code: string | null; message: string | null }
@@ -27,10 +27,8 @@ export const createUser = async (
   const auth = getAuth()
   try {
     const resp = await createUserWithEmailAndPassword(auth, email, password)
-    await upsertUserMeta({
-      email,
-      name,
-      phone,
+    await updateProfile(resp.user, {
+      displayName: name,
     })
     await signIn('credentials', {
       username: email,

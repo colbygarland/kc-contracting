@@ -5,15 +5,11 @@ import { useSession } from 'next-auth/react'
 import { getCompany } from './companies'
 import { getEquipment } from './equipment'
 import { getTruck } from './trucks'
-import { encodeEmail } from '../utils/strings'
-import { getUserMeta } from './users'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
   uid: string
   email: string
-  name?: string
-  phone?: string
   ticketDate: string
   company: string
   locations: Array<{
@@ -40,6 +36,14 @@ export interface Ticket {
   // If this is set, consider the ticket approved and don't show it anymore to the user
   approvedAt?: string
   ticketNumber: number
+}
+
+const encodeEmail = (email: string) => {
+  return email.replaceAll('.', '_____')
+}
+
+const decodeEmail = (email: string) => {
+  return email.replaceAll('_____', '.')
 }
 
 const PATH = (email: string) => {
@@ -114,17 +118,14 @@ export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
       index++
     }
 
-    const [company, truck, trailer, userMeta] = await Promise.all([
+    const [company, truck, trailer] = await Promise.all([
       getCompany(t.company as string),
       getTruck(t.truck as string),
       getEquipment(t.trailer as string),
-      getUserMeta(t.email as string),
     ])
     t.company = company?.name
     t.truck = truck?.name
     t.trailer = trailer?.name
-    t.name = userMeta?.name
-    t.phone = userMeta?.phone
 
     return t as unknown as Ticket
   } catch (error) {
@@ -136,29 +137,16 @@ export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
 export const getAllTickets = async (email?: string): Promise<Array<Ticket>> => {
   try {
     const path = email ? PATH(email) : 'tickets'
-    let tickets = await getFromDatabase(path)
-    if (!tickets) {
+    let ticket = await getFromDatabase(path)
+    if (!ticket) {
       return []
     }
 
     if (!email) {
-      tickets = flattenObject(tickets)
+      ticket = flattenObject(ticket)
     }
 
-    const ticketsAsArray = objectToArray<Ticket>(
-      tickets,
-      'ticketDate',
-      'number',
-    )
-
-    let index = 0
-    for (const ticket of ticketsAsArray) {
-      const comp = await getCompany(ticket.company)
-      ticketsAsArray[index].company = comp?.name || '-'
-      index++
-    }
-
-    return ticketsAsArray
+    return objectToArray<Ticket>(ticket, 'ticketDate', 'number')
   } catch (error) {
     console.error(`Error getting all tickets. Error: ${error}`)
     return []

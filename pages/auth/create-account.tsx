@@ -11,7 +11,6 @@ export default function CreateAccount() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [phone, setPhone] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -27,7 +26,7 @@ export default function CreateAccount() {
     }
 
     setLoading(true)
-    const { user, error } = await createUser(email, password, name, phone)
+    const { user, error } = await createUser(email, password, name)
     setLoading(false)
     if (user) {
       router.replace('/')
@@ -66,13 +65,6 @@ export default function CreateAccount() {
           name="email"
           required
           onChange={e => setEmail(e.target.value)}
-        />
-      </FormGroup>
-      <FormGroup label="Phone">
-        <Input
-          type="phone"
-          name="phone"
-          onChange={e => setPhone(e.target.value)}
         />
       </FormGroup>
       <FormGroup label="Password" required>

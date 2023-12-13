@@ -13,6 +13,7 @@ import {
 import { Truck, getAllTrucks } from '@/src/api/trucks'
 import { useData } from '@/src/hooks/useData'
 import { useFocus } from '@/src/hooks/useFocus'
+import { store } from '@/src/store/store'
 import { getCurrentDate } from '@/src/utils/date'
 import {
   Button,
