@@ -4,6 +4,8 @@ import { objectToArray } from '../utils/arrays'
 export interface Truck {
   name: string
   id?: string
+  rate: number
+  rateType: 'hourly' | 'daily'
   createdAt?: string
   updatedAt?: string
   // If this is set, consider the truck deleted
