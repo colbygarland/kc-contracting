@@ -108,7 +108,7 @@ const Equipment = ({
   let showRemoveButton = Boolean(index)
 
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-3 md:gap-6">
       <FormGroup label="Equipment" required>
         <Select name="equipment" placeholder="Select equipment" required>
           {equipment.map(equipment => (
@@ -317,7 +317,7 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
         <div className="mb-4 pb-6 border-b border-b-slate-200">
           <Button onClick={addEquipment}>+ Add Equipment</Button>
         </div>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 md:gap-6">
           <FormGroup label="Truck">
             <Select name="truck" placeholder="Select truck">
               {trucks.map(truck => (
