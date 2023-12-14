@@ -7,6 +7,7 @@ import { getEquipment } from './equipment'
 import { getTruck } from './trucks'
 import { encodeEmail } from '../utils/strings'
 import { getUserMeta } from './users'
+import { toTimestamp } from '../utils/date'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
@@ -39,6 +40,9 @@ export interface Ticket {
   deletedAt?: string | null
   // If this is set, consider the ticket approved and don't show it anymore to the user
   approvedAt?: string
+  // admin users can reject a ticket with a reason
+  rejectedAt?: string
+  rejectionReason?: string
   ticketNumber: number
 }
 
@@ -78,6 +82,43 @@ export const updateTicket = async (
   }
 }
 
+export const approveTicket = async (ticket: Ticket): Promise<boolean> => {
+  try {
+    await writeToDatabase({
+      data: {
+        approvedAt: ticket.approvedAt,
+        rejectedAt: '',
+        rejectionReason: '',
+      },
+      path: PATH(ticket.email as string),
+      id: ticket.id as string,
+      forceUpdate: true,
+    })
+    return true
+  } catch (error) {
+    console.error(`Error approving ticket. Error: ${error}`)
+    return false
+  }
+}
+
+export const rejectTicket = async (ticket: Ticket): Promise<boolean> => {
+  try {
+    await writeToDatabase({
+      data: {
+        rejectedAt: ticket.rejectedAt,
+        rejectionReason: ticket.rejectionReason,
+      },
+      path: PATH(ticket.email as string),
+      id: ticket.id as string,
+      forceUpdate: true,
+    })
+    return true
+  } catch (error) {
+    console.error(`Error rejecting ticket. Error: ${error}`)
+    return false
+  }
+}
+
 export const deleteTicket = async (ticket: Ticket) => {
   try {
     await writeToDatabase({
@@ -110,7 +151,7 @@ export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
       // @ts-ignore
       t.equipment[index].name = eq.name
       // @ts-ignore
-      t.equipment[index].attachment = attachment.name
+      t.equipment[index].attachment = attachment.name ?? ''
       index++
     }
 

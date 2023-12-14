@@ -23,7 +23,10 @@ import {
   Button,
   Checkbox,
   Input,
+  InputGroup,
+  InputLeftAddon,
   Link,
+  Select,
   Table,
   TableContainer,
   Tbody,
@@ -118,6 +121,7 @@ export default function EnterTrucks() {
                 <Thead>
                   <Tr>
                     <Th>Truck</Th>
+                    <Th>Rate</Th>
                     <Th>Last Updated</Th>
                     <Th></Th>
                   </Tr>
@@ -131,6 +135,9 @@ export default function EnterTrucks() {
                       })}
                     >
                       <Td>{truck.name}</Td>
+                      <Td>
+                        ${truck.rate} ({truck.rateType})
+                      </Td>
                       <Td>{fromTimestamp(truck.updatedAt!)}</Td>
                       <Td>
                         <Link href={`/admin/enter-truck?id=${truck.id}`}>
@@ -178,6 +185,32 @@ export default function EnterTrucks() {
                 name="name"
                 required
               />
+            </FormGroup>
+            <FormGroup label="Rate type">
+              <Select name="rateType" placeholder="Select rate">
+                <option
+                  value="hourly"
+                  selected={editingTruckName?.rateType === 'hourly'}
+                >
+                  Hourly
+                </option>
+                <option
+                  value="daily"
+                  selected={editingTruckName?.rateType === 'daily'}
+                >
+                  Daily
+                </option>
+              </Select>
+            </FormGroup>
+            <FormGroup label="Rate">
+              <InputGroup>
+                <InputLeftAddon>$</InputLeftAddon>
+                <Input
+                  defaultValue={editingTruckName?.rate}
+                  type="number"
+                  name="rate"
+                />
+              </InputGroup>
             </FormGroup>
             <Button type="submit">{buttonText}</Button>
           </form>

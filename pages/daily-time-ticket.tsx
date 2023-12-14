@@ -1,3 +1,4 @@
+import { Alert } from '@/components/Alert'
 import { H2 } from '@/components/Headings'
 import { Loader } from '@/components/Loader'
 import { FormGroup } from '@/components/forms/FormGroup'
@@ -9,6 +10,7 @@ import {
   Ticket,
   createTicket,
   getLastTicketCreated,
+  getTicket,
 } from '@/src/api/ticket'
 import { Truck, getAllTrucks } from '@/src/api/trucks'
 import { UserMeta, upsertUserMeta } from '@/src/api/users'
@@ -25,6 +27,7 @@ import {
   Textarea,
   useToast,
 } from '@chakra-ui/react'
+import { getServerSession } from 'next-auth'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -49,7 +52,15 @@ const TOASTS = {
   },
 }
 
-const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
+const Location = ({
+  index,
+  onRemove,
+  editTicket,
+}: {
+  index?: number
+  onRemove?: any
+  editTicket?: Ticket
+}) => {
   let showRemoveButton = Boolean(index)
   const [chargeToRef, setInputFocus] = useFocus()
 
@@ -66,8 +77,15 @@ const Location = ({ index, onRemove }: { index?: number; onRemove?: any }) => {
                   setInputFocus()
                 }}
               >
-                {CHARGE_TO.map(chargeTo => (
-                  <option key={chargeTo}>{chargeTo}</option>
+                {CHARGE_TO.map((chargeTo, index) => (
+                  <option
+                    key={chargeTo}
+                    selected={
+                      editTicket?.locations[index]?.chargeType === chargeTo
+                    }
+                  >
+                    {chargeTo}
+                  </option>
                 ))}
               </Select>
             </InputLeftAddon>
@@ -99,16 +117,18 @@ const Equipment = ({
   equipment,
   attachments,
   onRemove,
+  editTicket,
 }: {
   index?: number
   equipment: Array<IEquipment>
   attachments: Array<IEquipment>
   onRemove?: any
+  editTicket?: Ticket
 }) => {
   let showRemoveButton = Boolean(index)
 
   return (
-    <div className="grid grid-cols-3 gap-6">
+    <div className="grid md:grid-cols-3 md:gap-6">
       <FormGroup label="Equipment" required>
         <Select name="equipment" placeholder="Select equipment" required>
           {equipment.map(equipment => (
@@ -146,7 +166,13 @@ const Equipment = ({
   )
 }
 
-export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
+export default function EnterHours({
+  ticketNumber,
+  editTicket,
+}: {
+  ticketNumber: number
+  editTicket?: Ticket
+}) {
   const session = useSession()
   const toast = useToast()
   const [loading, setLoading] = useState(false)
@@ -164,7 +190,9 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
   const attachmentsList = allEquipment.filter(e => e.isAttachment)
 
   const updateTicket = 'id' in router.query
-  const title = updateTicket ? 'Edit ticket' : 'Create ticket'
+  const title = updateTicket
+    ? `Edit ticket #${editTicket?.ticketNumber}`
+    : 'Create ticket'
   const buttonText = updateTicket ? 'Update ticket' : 'Create ticket'
 
   // todo: think of a better way to do this
@@ -245,6 +273,8 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
       equipment,
       approvedAt: '',
       ticketNumber,
+      rejectedAt: '',
+      rejectionReason: '',
     }
 
     const ticketCreated = await createTicket(body)
@@ -284,23 +314,46 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
   return (
     <Page title="Daily Time Ticket">
       <H2>{title}</H2>
+      {editTicket?.rejectedAt && (
+        <div className="mb-4">
+          <Alert
+            title="Ticket Rejected"
+            message={`Reason: ${editTicket.rejectionReason}`}
+            type="danger"
+          />
+        </div>
+      )}
       <form onSubmit={onFormSubmit}>
         <input type="hidden" name="email" value={session.data!.user!.email!} />
         <input type="hidden" name="uid" value={'todo'} />
         <FormGroup label="Date" required>
-          <Input type="date" name="ticketDate" defaultValue={today} required />
+          <Input
+            type="date"
+            name="ticketDate"
+            defaultValue={editTicket?.ticketDate ?? today}
+            required
+          />
         </FormGroup>
         <FormGroup label="Company" required>
           <Select name="company" placeholder="Select company" required>
             {companies.map(company => (
-              <option value={company.id} key={company.id}>
+              <option
+                value={company.id}
+                key={company.id}
+                selected={editTicket?.company === company.name}
+              >
                 {company.name}
               </option>
             ))}
           </Select>
         </FormGroup>
         {locations.map((location, index) => (
-          <Location key={index} index={index} onRemove={removeLocation} />
+          <Location
+            key={index}
+            index={index}
+            onRemove={removeLocation}
+            editTicket={editTicket}
+          />
         ))}
         <div className="mb-4 pb-6 border-b border-b-slate-200">
           <Button onClick={addLocation}>+ Add Location</Button>
@@ -312,12 +365,13 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
             key={index}
             index={index}
             onRemove={removeEquipment}
+            editTicket={editTicket}
           />
         ))}
         <div className="mb-4 pb-6 border-b border-b-slate-200">
           <Button onClick={addEquipment}>+ Add Equipment</Button>
         </div>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 md:gap-6">
           <FormGroup label="Truck">
             <Select name="truck" placeholder="Select truck">
               {trucks.map(truck => (
@@ -356,13 +410,24 @@ export default function EnterHours({ ticketNumber }: { ticketNumber: number }) {
   )
 }
 
-export async function getServerSideProps() {
+// @ts-ignore
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, {})
+  const editTicket = context.query.id
+    ? // @ts-ignore
+      await getTicket({
+        id: context.query.id,
+        // @ts-ignore
+        email: session!.user!.email,
+      })
+    : null
   const ticket = await getLastTicketCreated()
   const ticketNumber = ticket ? ticket.ticketNumber + 1 : 1
 
   return {
     props: {
       ticketNumber,
+      editTicket,
     },
   }
 }

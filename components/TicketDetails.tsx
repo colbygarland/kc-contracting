@@ -9,10 +9,20 @@ import {
   Thead,
   Tr,
 } from '@chakra-ui/react'
+import { Alert } from './Alert'
 
 export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
   return (
     <>
+      {currentTicket.rejectedAt && (
+        <div className="mb-6">
+          <Alert
+            title="Ticket Rejected"
+            message={`Reason: ${currentTicket.rejectionReason as string}`}
+            type="danger"
+          />
+        </div>
+      )}
       <TableContainer mb={4}>
         <Table size="sm" layout="fixed">
           <Thead>

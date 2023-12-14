@@ -7,6 +7,7 @@ import {
   set,
   query,
   equalTo,
+  update,
 } from 'firebase/database'
 import { generateId } from '../utils/strings'
 import { toTimestamp } from '../utils/date'
@@ -22,24 +23,41 @@ export const writeToDatabase = async ({
   data,
   path,
   id,
+  forceUpdate,
 }: {
   data: any
   path: string
   id?: string
+  forceUpdate?: boolean
 }): Promise<void> => {
   const now = toTimestamp(new Date())
   const generatedId = id ? id : now
-  set(ref(db, `/data/${path}/${generatedId}`), {
-    ...data,
-    ...(data && {
-      updatedAt: now,
-      deletedAt: null,
-      id: generatedId,
-    }),
-    ...(!id && {
-      createdAt: now,
-    }),
-  })
+
+  if (forceUpdate) {
+    update(ref(db, `/data/${path}/${generatedId}`), {
+      ...data,
+      ...(data && {
+        updatedAt: now,
+        deletedAt: null,
+        id: generatedId,
+      }),
+      ...(!id && {
+        createdAt: now,
+      }),
+    })
+  } else {
+    set(ref(db, `/data/${path}/${generatedId}`), {
+      ...data,
+      ...(data && {
+        updatedAt: now,
+        deletedAt: null,
+        id: generatedId,
+      }),
+      ...(!id && {
+        createdAt: now,
+      }),
+    })
+  }
 }
 
 export const getFromDatabase = async (
