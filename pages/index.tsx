@@ -5,8 +5,10 @@ import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import {
   Ticket,
+  approveTicket,
   getAllTicketsForApproval,
   getTicket,
+  rejectTicket,
   updateTicket,
 } from '@/src/api/ticket'
 import { isAdmin } from '@/src/auth/roles'
@@ -57,10 +59,9 @@ const TicketsForApproval = ({
 
   const approve = async () => {
     // set the ticket as approved
-    await updateTicket({
-      ...currentTicket,
-      approvedAt: toTimestamp(new Date()),
-    })
+    currentTicket!.approvedAt = toTimestamp(new Date()) as unknown as string
+    // @ts-ignore
+    await approveTicket(currentTicket)
     setCurrentTicket(null)
     onClose()
   }
@@ -68,13 +69,14 @@ const TicketsForApproval = ({
   const rejectConfirm = async (e: ChangeEvent<HTMLFormElement>) => {
     // set the ticket rejected in the db
     e.preventDefault()
-    setLoading(true)
     const form = e.target
     const formJson = Object.fromEntries(new FormData(form).entries())
     currentTicket!.rejectionReason = formJson['rejectionReason'] as string
+    currentTicket!.rejectedAt = formJson['rejectedAt'] as string
     // @ts-ignore
-    await updateTicket(currentTicket)
+    await rejectTicket(currentTicket)
     rejectOnClose()
+    onClose()
   }
 
   return (
@@ -158,11 +160,7 @@ const TicketsForApproval = ({
                     value={toTimestamp(new Date())}
                   />
                   <FormGroup label="Reason for rejection" required>
-                    <Textarea
-                      name="rejectionReason"
-                      required
-                      value={'TODO: this doesnt work'}
-                    ></Textarea>
+                    <Textarea name="rejectionReason" required></Textarea>
                   </FormGroup>
                   <Button colorScheme="red" mb={2} type="submit">
                     Reject ticket
