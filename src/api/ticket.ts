@@ -7,6 +7,7 @@ import { getEquipment } from './equipment'
 import { getTruck } from './trucks'
 import { encodeEmail } from '../utils/strings'
 import { getUserMeta } from './users'
+import { toTimestamp } from '../utils/date'
 
 export type ChargeType = 'PO #' | 'LSD' | 'Job #'
 export interface Ticket {
@@ -39,6 +40,9 @@ export interface Ticket {
   deletedAt?: string | null
   // If this is set, consider the ticket approved and don't show it anymore to the user
   approvedAt?: string
+  // admin users can reject a ticket with a reason
+  rejectedAt?: string
+  rejectionReason?: string
   ticketNumber: number
 }
 
@@ -68,6 +72,23 @@ export const updateTicket = async (
   try {
     await writeToDatabase({
       data: ticket,
+      path: PATH(ticket.email as string),
+      id: ticket.id as string,
+    })
+    return true
+  } catch (error) {
+    console.error(`Error updating ticket. Error: ${error}`)
+    return false
+  }
+}
+
+export const rejectTicket = async (ticket: Ticket): Promise<boolean> => {
+  try {
+    await writeToDatabase({
+      data: {
+        rejectedAt: ticket.rejectedAt,
+        rejectionReason: ticket.rejectionReason,
+      },
       path: PATH(ticket.email as string),
       id: ticket.id as string,
     })
