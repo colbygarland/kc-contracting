@@ -22,7 +22,10 @@ import {
   Button,
   Checkbox,
   Input,
+  InputGroup,
+  InputLeftAddon,
   Link,
+  Select,
   Table,
   TableContainer,
   Tbody,
@@ -121,6 +124,7 @@ export default function EnterEquipment() {
                 <Thead>
                   <Tr>
                     <Th>Equipment</Th>
+                    <Th>Rate</Th>
                     <Th>Last Updated</Th>
                     <Th></Th>
                   </Tr>
@@ -134,6 +138,9 @@ export default function EnterEquipment() {
                       })}
                     >
                       <Td>{equipment.name}</Td>
+                      <Td>
+                        ${equipment.rate} ({equipment.rateType})
+                      </Td>
                       <Td>{fromTimestamp(equipment.updatedAt!)}</Td>
                       <Td>
                         <Link
@@ -167,6 +174,7 @@ export default function EnterEquipment() {
                 <Thead>
                   <Tr>
                     <Th>Attachment</Th>
+                    <Th>Rate</Th>
                     <Th>Last Updated</Th>
                     <Th></Th>
                   </Tr>
@@ -180,6 +188,11 @@ export default function EnterEquipment() {
                       })}
                     >
                       <Td>{attachment.name}</Td>
+                      <Td>
+                        {attachment.rate
+                          ? `$${attachment.rate} (${attachment.rateType})`
+                          : '-'}
+                      </Td>
                       <Td>{fromTimestamp(attachment.updatedAt!)}</Td>
                       <Td>
                         <Link
@@ -271,6 +284,32 @@ export default function EnterEquipment() {
                 name="name"
                 required
               />
+            </FormGroup>
+            <FormGroup label="Rate type">
+              <Select name="rateType" placeholder="Select rate">
+                <option
+                  value="hourly"
+                  selected={editingEquipmentName?.rateType === 'hourly'}
+                >
+                  Hourly
+                </option>
+                <option
+                  value="daily"
+                  selected={editingEquipmentName?.rateType === 'daily'}
+                >
+                  Daily
+                </option>
+              </Select>
+            </FormGroup>
+            <FormGroup label="Rate">
+              <InputGroup>
+                <InputLeftAddon>$</InputLeftAddon>
+                <Input
+                  defaultValue={editingEquipmentName?.rate}
+                  type="number"
+                  name="rate"
+                />
+              </InputGroup>
             </FormGroup>
             <FormGroup label="Is this an attachment?">
               <Checkbox name="isAttachment" value="true">

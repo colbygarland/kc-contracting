@@ -5,6 +5,8 @@ export interface Equipment {
   name: string
   isTrailer?: boolean
   isAttachment?: boolean
+  rate: number
+  rateType: 'hourly' | 'daily'
   id?: string
   createdAt?: string
   updatedAt?: string
