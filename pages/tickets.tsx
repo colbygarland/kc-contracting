@@ -19,6 +19,8 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
+  List,
+  ListItem,
 } from '@chakra-ui/react'
 import { getServerSession } from 'next-auth'
 import Link from 'next/link'
@@ -46,11 +48,27 @@ const Pill = ({
   )
 }
 
+const getCallBackground = (ticket: Ticket) => {
+  if (ticket.approvedAt) {
+    return 'approved'
+  }
+  if (ticket.rejectedAt) {
+    return 'rejected'
+  }
+
+  return 'pending'
+}
+
 export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
   const [loading, setLoading] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const cellBackground = (status: 'approved' | 'rejected' | 'pending') => {
+  const cellBackground = (
+    status: 'approved' | 'rejected' | 'pending' | undefined,
+  ) => {
+    if (!status) {
+      return ''
+    }
     return {
       approved: 'bg-emerald-50',
       rejected: 'bg-red-50',
@@ -70,84 +88,71 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
         </>
       ) : (
         <>
-          <TableContainer>
-            <Table layout="fixed">
-              <Thead>
-                <Tr>
-                  <Th>Ticket Number</Th>
-                  <Th>Date</Th>
-                  <Th>Company</Th>
-                  <Th></Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {tickets.map(ticket => (
-                  <Tr key={ticket.id}>
-                    <Td
-                      className={cellBackground(
-                        ticket.approvedAt
-                          ? 'approved'
-                          : ticket.rejectedAt
-                          ? 'rejected'
-                          : 'pending',
-                      )}
-                    >
-                      {ticket.ticketNumber}
-                      {ticket.rejectedAt && (
-                        <Pill status="rejected">REJECTED</Pill>
-                      )}
-                      {ticket.approvedAt && (
-                        <Pill status="approved">APPROVED</Pill>
-                      )}
-                    </Td>
-                    <Td
-                      className={cellBackground(
-                        ticket.approvedAt
-                          ? 'approved'
-                          : ticket.rejectedAt
-                          ? 'rejected'
-                          : 'pending',
-                      )}
-                    >
-                      {ticket.ticketDate}
-                    </Td>
-                    <Td
-                      className={cellBackground(
-                        ticket.approvedAt
-                          ? 'approved'
-                          : ticket.rejectedAt
-                          ? 'rejected'
-                          : 'pending',
-                      )}
-                    >
-                      {ticket.company}
-                    </Td>
-                    <Td
-                      className={cellBackground(
-                        ticket.approvedAt
-                          ? 'approved'
-                          : ticket.rejectedAt
-                          ? 'rejected'
-                          : 'pending',
-                      )}
-                    >
-                      <Button
-                        onClick={async () => {
-                          setLoading(true)
-                          const t = await getTicket(ticket)
-                          setCurrentTicket(t)
-                          setLoading(false)
-                          onOpen()
-                        }}
-                      >
-                        <MdEditDocument />
-                      </Button>
-                    </Td>
+          <div className="lg:hidden">
+            <List>
+              {tickets.map(ticket => (
+                <ListItem key={ticket.id} mb={4}>
+                  <div className={cellBackground(ticket.status)}>
+                    <div>
+                      <strong>Ticket #{ticket.ticketNumber}</strong>
+                    </div>
+                    <div>
+                      <strong>Date:</strong> {ticket.ticketDate}
+                    </div>
+                  </div>
+                </ListItem>
+              ))}
+            </List>
+          </div>
+          <div className="hidden lg:block">
+            <TableContainer>
+              <Table layout="fixed">
+                <Thead>
+                  <Tr>
+                    <Th>Ticket Number</Th>
+                    <Th>Date</Th>
+                    <Th>Company</Th>
+                    <Th></Th>
                   </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </Thead>
+                <Tbody>
+                  {tickets.map(ticket => (
+                    <Tr key={ticket.id}>
+                      <Td className={cellBackground(ticket.status)}>
+                        {ticket.ticketNumber}
+                        {ticket.rejectedAt && (
+                          <Pill status="rejected">REJECTED</Pill>
+                        )}
+                        {ticket.approvedAt && (
+                          <Pill status="approved">APPROVED</Pill>
+                        )}
+                      </Td>
+                      <Td className={cellBackground(ticket.status)}>
+                        {ticket.ticketDate}
+                      </Td>
+                      <Td className={cellBackground(ticket.status)}>
+                        {ticket.company}
+                      </Td>
+                      <Td className={cellBackground(ticket.status)}>
+                        <Button
+                          onClick={async () => {
+                            setLoading(true)
+                            const t = await getTicket(ticket)
+                            setCurrentTicket(t)
+                            setLoading(false)
+                            onOpen()
+                          }}
+                        >
+                          <MdEditDocument />
+                        </Button>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </div>
+
           <Modal isOpen={isOpen} onClose={onClose} size="full">
             <ModalOverlay />
             <ModalContent>

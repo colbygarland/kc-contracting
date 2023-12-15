@@ -44,6 +44,7 @@ export interface Ticket {
   rejectedAt?: string
   rejectionReason?: string
   ticketNumber: number
+  status?: 'approved' | 'rejected' | 'pending'
 }
 
 const PATH = (email: string) => {
@@ -167,6 +168,8 @@ export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
     t.name = userMeta?.name
     t.phone = userMeta?.phone
 
+    t.status = t.approvedAt ? 'approved' : t.rejectedAt ? 'rejected' : 'pending'
+
     return t as unknown as Ticket
   } catch (error) {
     console.error(`Error creating ticket. Error: ${error}`)
@@ -196,6 +199,12 @@ export const getAllTickets = async (email?: string): Promise<Array<Ticket>> => {
     for (const ticket of ticketsAsArray) {
       const comp = await getCompany(ticket.company)
       ticketsAsArray[index].company = comp?.name || '-'
+      ticketsAsArray[index].status = ticket.approvedAt
+        ? 'approved'
+        : ticket.rejectedAt
+        ? 'rejected'
+        : 'pending'
+
       index++
     }
 
