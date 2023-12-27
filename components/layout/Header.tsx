@@ -100,6 +100,8 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
 
 const UserButton = () => {
   const { colorMode, setColorMode } = useColorMode()
+  const session = useSession()
+  const adminUser = isAdmin(session?.data?.user?.email)
 
   return (
     <Menu>
