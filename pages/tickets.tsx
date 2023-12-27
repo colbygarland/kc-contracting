@@ -48,17 +48,6 @@ const Pill = ({
   )
 }
 
-const getCallBackground = (ticket: Ticket) => {
-  if (ticket.approvedAt) {
-    return 'approved'
-  }
-  if (ticket.rejectedAt) {
-    return 'rejected'
-  }
-
-  return 'pending'
-}
-
 export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
   const [currentTicket, setCurrentTicket] = useState<Ticket | null>(null)
   const [loading, setLoading] = useState(false)
@@ -74,6 +63,14 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
       rejected: 'bg-red-50',
       pending: '',
     }[status]
+  }
+
+  const handleOnClick = async (ticket: Ticket) => {
+    setLoading(true)
+    const t = await getTicket(ticket)
+    setCurrentTicket(t)
+    setLoading(false)
+    onOpen()
   }
 
   return (
@@ -92,7 +89,14 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
             <List>
               {tickets.map(ticket => (
                 <ListItem key={ticket.id} mb={4}>
-                  <div className={cellBackground(ticket.status)}>
+                  <div
+                    className={`${cellBackground(
+                      ticket.status,
+                    )} cursor-pointer`}
+                    onClick={() => {
+                      handleOnClick(ticket)
+                    }}
+                  >
                     <div>
                       <strong>Ticket #{ticket.ticketNumber}</strong>
                     </div>
@@ -136,11 +140,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                       <Td className={cellBackground(ticket.status)}>
                         <Button
                           onClick={async () => {
-                            setLoading(true)
-                            const t = await getTicket(ticket)
-                            setCurrentTicket(t)
-                            setLoading(false)
-                            onOpen()
+                            handleOnClick(ticket)
                           }}
                         >
                           <MdEditDocument />
@@ -185,9 +185,11 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, {})
   const tickets = await getAllTickets(session?.user?.email as string)
+  // don't return approved tickets
+  const filteredTickets = tickets.filter(ticket => !ticket.approvedAt)
   return {
     props: {
-      tickets,
+      tickets: filteredTickets,
     },
   }
 }
