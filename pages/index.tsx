@@ -9,7 +9,6 @@ import {
   getAllTicketsForApproval,
   getTicket,
   rejectTicket,
-  updateTicket,
 } from '@/src/api/ticket'
 import { isAdmin } from '@/src/auth/roles'
 import { fromTimestamp, toTimestamp } from '@/src/utils/date'

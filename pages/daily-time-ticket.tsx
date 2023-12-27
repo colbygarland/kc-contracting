@@ -20,6 +20,8 @@ import { getCurrentDate } from '@/src/utils/date'
 import { get } from '@/src/utils/persist'
 import {
   Button,
+  ButtonGroup,
+  IconButton,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -403,7 +405,9 @@ export default function EnterHours({
           <Textarea name="description" />
         </FormGroup>
 
-        <Button type="submit">{buttonText}</Button>
+        <Button type="submit" colorScheme="green">
+          {buttonText}
+        </Button>
       </form>
       {loading && <Loader />}
     </Page>
