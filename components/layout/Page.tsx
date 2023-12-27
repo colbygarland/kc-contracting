@@ -15,8 +15,10 @@ export const Page = ({
   return (
     <main className="lg:mt-16">
       <Header title={title} />
-      <div className="py-2 px-6 border-b border-b-slate-200 lg:hidden">
-        <h1 className="text-lg text-slate-700 uppercase">{title}</h1>
+      <div className="py-2 px-6 border-b border-b-slate-200 dark:border-b-slate-600 lg:hidden">
+        <h1 className="text-lg text-slate-700 dark:text-slate-200 uppercase">
+          {title}
+        </h1>
       </div>
 
       <div className="lg:ml-64 p-6 lg:p-8">{children}</div>

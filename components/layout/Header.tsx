@@ -1,9 +1,6 @@
 import { CONSTANTS } from '@/constants'
 import { isAdmin } from '@/src/auth/roles'
-import { store } from '@/src/store/store'
-import { getInitials } from '@/src/utils/strings'
 import {
-  Box,
   Button,
   Container,
   Drawer,
@@ -18,12 +15,12 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useColorMode,
   useDisclosure,
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { FaBars, FaGear } from 'react-icons/fa6'
-import { H1 } from '../Headings'
+import { FaBars, FaGear, FaMoon, FaSun } from 'react-icons/fa6'
 import { signOut, useSession } from 'next-auth/react'
 
 const AppMenuItem = ({
@@ -39,7 +36,7 @@ const AppMenuItem = ({
   const isCurrentPage = router.pathname === to
   const styles = isCurrentPage
     ? 'text-sky-500 font-bold lg:text-lg'
-    : 'text-slate-500 font-normal hover:text-sky-400 transition duration-100 lg:text-lg'
+    : 'text-slate-500 dark:text-slate-200 font-normal hover:text-sky-400 transition duration-100 lg:text-lg'
 
   return (
     <Text fontSize="lg" fontWeight="bold" mb={4}>
@@ -66,7 +63,7 @@ const MenuItems = () => {
       <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
       {adminUser && (
         <>
-          <div className="bg-slate-100 h-1 mb-4" />
+          <div className="bg-slate-100 dark:bg-slate-600 h-1 mb-4" />
           <AppMenuItem to="/permits">Permits</AppMenuItem>
           <AppMenuItem to="/admin/enter-equipment">Equipment</AppMenuItem>
           <AppMenuItem to="/admin/enter-trucks">Truck</AppMenuItem>
@@ -97,20 +94,28 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
 }
 
 const UserButton = () => {
+  const { colorMode, setColorMode } = useColorMode()
+
   return (
     <Menu>
+      <Button
+        mr={2}
+        onClick={() => {
+          setColorMode(colorMode === 'dark' ? 'light' : 'dark')
+        }}
+      >
+        {colorMode === 'dark' ? <FaSun /> : <FaMoon />}
+      </Button>
       <MenuButton as={Button}>
         <FaGear />
       </MenuButton>
-      <MenuList color="black">
+      <MenuList>
         <MenuItem>
           <Link className="block" href="/employee-info">
             Employee Info
           </Link>
         </MenuItem>
-        <MenuItem>
-          <Button onClick={() => signOut()}>Logout</Button>
-        </MenuItem>
+        <MenuItem onClick={() => signOut()}>Logout</MenuItem>
       </MenuList>
     </Menu>
   )
@@ -121,7 +126,7 @@ const Mobile = () => {
 
   return (
     <div className="lg:hidden">
-      <div className="py-4 border-b-slate-200 border-b">
+      <div className="py-4 border-b-slate-200 dark:border-b-slate-600 border-b">
         <Container>
           <Flex justifyContent="space-between" alignItems="center">
             {/* @ts-ignore */}
@@ -131,7 +136,7 @@ const Mobile = () => {
               colorScheme="blue"
               _hover={{}}
             >
-              <FaBars className="text-slate-600 text-2xl" />
+              <FaBars className="text-slate-600 dark:text-slate-50 text-2xl" />
             </Button>
             <Text fontWeight="bold">{CONSTANTS.APP_NAME}</Text>
             <UserButton />
@@ -146,16 +151,20 @@ const Mobile = () => {
 const Desktop = ({ title }: { title: string }) => {
   return (
     <div className="hidden lg:block">
-      <div className="fixed top-0 left-0 h-screen w-64 z-50 bg-slate-50 border-r border-r-slate-200">
+      <div className="fixed top-0 left-0 h-screen w-64 z-50 bg-slate-50 dark:bg-chakra-dark border-r border-r-slate-200 dark:border-r-gray-700">
         <div className="w-md p-6">
-          <p className="mb-6 font-bold">{CONSTANTS.APP_NAME}</p>
+          <p className="mb-6 font-bold dark:text-slate-100">
+            {CONSTANTS.APP_NAME}
+          </p>
           <nav className="">
             <MenuItems />
           </nav>
         </div>
       </div>
-      <div className="fixed top-0 left-64 z-50 bg-white border-b border-b-slate-200 h-16 desktop-header flex items-center px-8">
-        <h1 className="text-lg font-bold text-slate-600 uppercase">{title}</h1>
+      <div className="fixed top-0 left-64 z-50 bg-white dark:bg-chakra-dark border-b border-b-slate-200 h-16 desktop-header flex items-center px-8">
+        <h1 className="text-lg font-bold text-slate-600 dark:text-slate-100 uppercase">
+          {title}
+        </h1>
         <div className="ml-auto">
           <UserButton />
         </div>

@@ -19,7 +19,10 @@ export const H1 = ({ children, ...rest }: { children: string }) => {
 
 export const H2 = ({ children, ...rest }: { children: string }) => {
   return (
-    <h2 className="mb-4 text-xl text-slate-700 font-bold" {...rest}>
+    <h2
+      className="mb-4 text-xl text-slate-700 dark:text-slate-100 font-bold"
+      {...rest}
+    >
       {children}
     </h2>
   )

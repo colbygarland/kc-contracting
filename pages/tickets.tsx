@@ -60,7 +60,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
     }
     return {
       approved: 'bg-emerald-50',
-      rejected: 'bg-red-50',
+      rejected: 'bg-red-50 dark:bg-red-900',
       pending: '',
     }[status]
   }

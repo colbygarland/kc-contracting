@@ -1,6 +1,10 @@
 import { initFirebase } from '@/firebase'
 import '@/styles/globals.css'
-import { ChakraProvider } from '@chakra-ui/react'
+import {
+  ChakraProvider,
+  useColorMode,
+  useColorModeValue,
+} from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import { Inter } from 'next/font/google'
 import { enableReactUse } from '@legendapp/state/config/enableReactUse'
@@ -8,13 +12,15 @@ import Head from 'next/head'
 import { CONSTANTS } from '@/constants'
 import { SessionProvider, useSession } from 'next-auth/react'
 import { Loader } from '@/components/Loader'
+import theme from '@/styles/theme'
+import { App } from '@/components/layout/App'
 
 const inter = Inter({ subsets: ['latin'] })
 
 initFirebase()
 enableReactUse()
 
-export default function App({
+export default function NextApp({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
@@ -23,17 +29,19 @@ export default function App({
       <Head>
         <title>{CONSTANTS.APP_NAME}</title>
       </Head>
-      <ChakraProvider>
-        <div className={inter.className}>
-          {/* @ts-expect-error */}
-          {Component.auth ? (
-            <Auth>
+      <ChakraProvider theme={theme}>
+        <App>
+          <div className={inter.className}>
+            {/* @ts-expect-error */}
+            {Component.auth ? (
+              <Auth>
+                <Component {...pageProps} />
+              </Auth>
+            ) : (
               <Component {...pageProps} />
-            </Auth>
-          ) : (
-            <Component {...pageProps} />
-          )}
-        </div>
+            )}
+          </div>
+        </App>
       </ChakraProvider>
     </SessionProvider>
   )
