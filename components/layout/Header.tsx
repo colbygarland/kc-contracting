@@ -22,6 +22,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaBars, FaGear, FaMoon, FaSun } from 'react-icons/fa6'
 import { signOut, useSession } from 'next-auth/react'
+import Image from 'next/image'
 
 const AppMenuItem = ({ to, children }: { to: string; children: string }) => {
   const router = useRouter()
@@ -166,9 +167,10 @@ const Desktop = ({ title }: { title: string }) => {
     <div className="hidden lg:block">
       <div className="fixed top-0 left-0 h-screen w-64 z-50 dark:bg-chakra-dark border-r border-r-slate-200 dark:border-r-gray-700">
         <div className="w-md p-6">
-          <p className="mb-6 pl-6 font-bold dark:text-slate-100">
-            {CONSTANTS.APP_NAME}
-          </p>
+          <div className="h-48 w-48 dark:bg-white rounded-full mb-12 mx-auto">
+            <Image src="/logo.png" height={250} width={250} alt="logo" />
+          </div>
+
           <nav className="">
             <MenuItems />
           </nav>

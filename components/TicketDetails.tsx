@@ -11,7 +11,13 @@ import {
 } from '@chakra-ui/react'
 import { Alert } from './Alert'
 
-export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
+export const TicketDetails = ({
+  currentTicket,
+  showRates,
+}: {
+  currentTicket: Ticket
+  showRates?: boolean
+}) => {
   return (
     <>
       {currentTicket.rejectedAt && (
