@@ -103,6 +103,10 @@ const UserButton = () => {
   const session = useSession()
   const adminUser = isAdmin(session?.data?.user?.email)
 
+  const toggleColorMode = () => {
+    setColorMode(colorMode === 'dark' ? 'light' : 'dark')
+  }
+
   return (
     <Menu>
       <div className="flex items-center">
