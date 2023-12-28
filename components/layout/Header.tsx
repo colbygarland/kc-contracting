@@ -59,6 +59,7 @@ const MenuItems = () => {
     <>
       {adminUser && <AppMenuItem to="/">Home</AppMenuItem>}
       <AppMenuItem to="/daily-time-ticket">Create Ticket</AppMenuItem>
+      <AppMenuItem to="/practice-ticket">Practice Ticket</AppMenuItem>
       <AppMenuItem to="/tickets">View Tickets</AppMenuItem>
       <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
       {adminUser && (
