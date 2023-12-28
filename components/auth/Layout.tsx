@@ -30,9 +30,12 @@ export const Layout = ({
               <Stack spacing="6">
                 <Stack spacing="5">{children}</Stack>
                 <Stack spacing="6">
-                  <Button type="submit" colorScheme="blue">
+                  <button
+                    type="submit"
+                    className="bg-gradient-to-r from-indigo-600 from-70% to-violet-600 text-white uppercase py-2 rounded-xl shadow-lg"
+                  >
                     {submitButtonText}
-                  </Button>
+                  </button>
                   {footerLink && (
                     <Box className="text-center">{footerLink}</Box>
                   )}

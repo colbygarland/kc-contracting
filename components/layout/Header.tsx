@@ -22,33 +22,23 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { FaBars, FaGear, FaMoon, FaSun } from 'react-icons/fa6'
 import { signOut, useSession } from 'next-auth/react'
+import Image from 'next/image'
 
-const AppMenuItem = ({
-  to,
-  icon,
-  children,
-}: {
-  to: string
-  icon?: React.ReactNode
-  children: string
-}) => {
+const AppMenuItem = ({ to, children }: { to: string; children: string }) => {
   const router = useRouter()
   const isCurrentPage = router.pathname === to
   const styles = isCurrentPage
-    ? 'text-sky-500 font-bold lg:text-lg'
-    : 'text-slate-500 dark:text-slate-200 font-normal hover:text-sky-400 transition duration-100 lg:text-lg'
+    ? 'bg-gradient-to-r from-indigo-600 from-70% to-violet-600 text-white hover:text-white'
+    : ''
 
   return (
-    <Text fontSize="lg" fontWeight="bold" mb={4}>
-      <Link href={to}>
-        <Flex alignItems="center" gap={2}>
-          <span className={styles}>
-            {icon && icon}
-            {children}
-          </span>
-        </Flex>
+    <div
+      className={`${styles} transition duration-100 rounded-xl font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900`}
+    >
+      <Link href={to} className="block py-2 px-6">
+        {children}
       </Link>
-    </Text>
+    </div>
   )
 }
 
@@ -57,14 +47,24 @@ const MenuItems = () => {
   const adminUser = isAdmin(session?.data?.user?.email)
   return (
     <>
-      {adminUser && <AppMenuItem to="/">Home</AppMenuItem>}
+      {adminUser && <AppMenuItem to="/">Dashboard</AppMenuItem>}
+      {adminUser && (
+        <div className="text-slate-300 dark:text-slate-600 uppercase text-xs font-bold pl-6 mt-6 mb-2">
+          Tickets
+        </div>
+      )}
       <AppMenuItem to="/daily-time-ticket">Create Ticket</AppMenuItem>
       <AppMenuItem to="/practice-ticket">Practice Ticket</AppMenuItem>
+      {adminUser && (
+        <AppMenuItem to="/approve-tickets">Approve Tickets</AppMenuItem>
+      )}
       <AppMenuItem to="/tickets">View Tickets</AppMenuItem>
+      <div className="text-slate-300 dark:text-slate-600 uppercase text-xs font-bold pl-6 mt-6 mb-2">
+        Info
+      </div>
       <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
       {adminUser && (
         <>
-          <div className="bg-slate-100 dark:bg-slate-600 h-1 mb-4" />
           <AppMenuItem to="/permits">Permits</AppMenuItem>
           <AppMenuItem to="/admin/enter-equipment">Equipment</AppMenuItem>
           <AppMenuItem to="/admin/enter-trucks">Truck</AppMenuItem>
@@ -99,25 +99,38 @@ const UserButton = () => {
 
   return (
     <Menu>
-      <Button
-        mr={2}
-        onClick={() => {
-          setColorMode(colorMode === 'dark' ? 'light' : 'dark')
-        }}
-      >
-        {colorMode === 'dark' ? <FaSun /> : <FaMoon />}
-      </Button>
-      <MenuButton as={Button}>
-        <FaGear />
-      </MenuButton>
-      <MenuList>
-        <MenuItem>
-          <Link className="block" href="/employee-info">
-            Employee Info
-          </Link>
-        </MenuItem>
-        <MenuItem onClick={() => signOut()}>Logout</MenuItem>
-      </MenuList>
+      <div className="flex items-center">
+        <button
+          className="mr-2 p-3 rounded-full"
+          onClick={() => {
+            setColorMode(colorMode === 'dark' ? 'light' : 'dark')
+          }}
+        >
+          {colorMode === 'dark' ? <FaSun /> : <FaMoon />}
+        </button>
+        <MenuButton
+          as={Button}
+          rounded="full"
+          h={10}
+          w={10}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          padding={0}
+        >
+          <div className="h-10 w-10 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-full">
+            <FaGear />
+          </div>
+        </MenuButton>
+        <MenuList>
+          <MenuItem>
+            <Link className="block" href="/employee-info">
+              Employee Info
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={() => signOut()}>Logout</MenuItem>
+        </MenuList>
+      </div>
     </Menu>
   )
 }
@@ -152,18 +165,19 @@ const Mobile = () => {
 const Desktop = ({ title }: { title: string }) => {
   return (
     <div className="hidden lg:block">
-      <div className="fixed top-0 left-0 h-screen w-64 z-50 bg-slate-50 dark:bg-chakra-dark border-r border-r-slate-200 dark:border-r-gray-700">
+      <div className="fixed top-0 left-0 h-screen w-64 z-50 dark:bg-chakra-dark border-r border-r-slate-200 dark:border-r-gray-700">
         <div className="w-md p-6">
-          <p className="mb-6 font-bold dark:text-slate-100">
-            {CONSTANTS.APP_NAME}
-          </p>
+          <div className="h-48 w-48 dark:bg-white rounded-full mb-12 mx-auto">
+            <Image src="/logo.png" height={250} width={250} alt="logo" />
+          </div>
+
           <nav className="">
             <MenuItems />
           </nav>
         </div>
       </div>
-      <div className="fixed top-0 left-64 z-50 bg-white dark:bg-chakra-dark border-b border-b-slate-200 h-16 desktop-header flex items-center px-8">
-        <h1 className="text-lg font-bold text-slate-600 dark:text-slate-100 uppercase">
+      <div className="fixed top-0 left-64 z-50 bg-white dark:bg-chakra-dark border-b border-b-slate-200 dark:border-b-gray-700 h-16 desktop-header flex items-center px-8">
+        <h1 className="text-xl font-medium text-slate-900 dark:text-slate-100">
           {title}
         </h1>
         <div className="ml-auto">

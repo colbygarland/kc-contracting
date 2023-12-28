@@ -11,7 +11,13 @@ import {
 } from '@chakra-ui/react'
 import { Alert } from './Alert'
 
-export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
+export const TicketDetails = ({
+  currentTicket,
+  showRates,
+}: {
+  currentTicket: Ticket
+  showRates?: boolean
+}) => {
   return (
     <>
       {currentTicket.rejectedAt && (
@@ -82,16 +88,18 @@ export const TicketDetails = ({ currentTicket }: { currentTicket: Ticket }) => {
           <Thead>
             <Tr>
               <Th>Location</Th>
-              <Th>Type</Th>
               <Th>Hours</Th>
+              <Th></Th>
             </Tr>
           </Thead>
           <Tbody>
             {currentTicket?.locations.map(location => (
               <Tr key={location.location}>
-                <Td>{location.location}</Td>
-                <Td>{location.chargeType}</Td>
+                <Td>
+                  {location.chargeType}: {location.location}
+                </Td>
                 <Td>{location.hours}</Td>
+                <Td></Td>
               </Tr>
             ))}
           </Tbody>

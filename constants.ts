@@ -1,1 +1,1 @@
-export const CONSTANTS = { APP_NAME: 'Kevin Crocker Contracting LTD' }
+export const CONSTANTS = { APP_NAME: 'KC Contracting' }

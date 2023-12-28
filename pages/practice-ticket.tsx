@@ -314,8 +314,7 @@ export default function EnterHours({
   }
 
   return (
-    <Page title="Daily Time Ticket">
-      <H2>{title}</H2>
+    <Page title="Practice Ticket">
       {editTicket?.rejectedAt && (
         <div className="mb-4">
           <Alert
