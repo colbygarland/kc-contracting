@@ -18,6 +18,8 @@ import { Ticket, getAllTickets } from '@/src/api/ticket'
 import { UserMeta, getAllUserMeta } from '@/src/api/users'
 import { formatDate } from '@/src/utils/date'
 import { Loader } from '@/components/Loader'
+import download from 'downloadjs'
+import { createPDF } from '@/src/utils/pdf'
 
 export default function ExportTickets({
   employees,
@@ -29,6 +31,10 @@ export default function ExportTickets({
   const [emptyMessage, setEmptyMessage] = useState(
     'Select a date range to export tickets.',
   )
+  const [dates, setDates] = useState<Record<string, Date | null>>({
+    startDate: null,
+    endDate: null,
+  })
   const now = new Date()
   const defaultStartDate = new Date(now.getFullYear(), now.getMonth(), 1)
   const defaultEndDate = new Date(now.getFullYear(), now.getMonth() + 1, 0)
@@ -49,6 +55,11 @@ export default function ExportTickets({
     // filter by date range selected
     const start = new Date(formJson['start_date'] as string)
     const end = new Date(formJson['end_date'] as string)
+    // set the dates to be used later by the export button
+    setDates({
+      startDate: start,
+      endDate: end,
+    })
     const filteredTickets = allTickets.filter(ticket => {
       const dateCheck = formatDate(new Date(ticket.ticketDate))
 
@@ -72,6 +83,13 @@ export default function ExportTickets({
       setEmptyMessage('No tickets found with that criteria.')
     }
     setLoading(false)
+  }
+
+  const exportTickets = async () => {
+    const start = formatDate(dates!.startDate!)
+    const end = formatDate(dates!.endDate!)
+    const pdf = await createPDF(tickets, start, end)
+    download(pdf, `tickets-${start}-${end}.pdf`, 'application/pdf')
   }
 
   return (
@@ -137,7 +155,11 @@ export default function ExportTickets({
                 Submit
               </Button>
               {tickets.length > 0 && (
-                <Button type="button" colorScheme="blue">
+                <Button
+                  type="button"
+                  colorScheme="blue"
+                  onClick={exportTickets}
+                >
                   Export Tickets
                 </Button>
               )}
