@@ -25,6 +25,7 @@ const TOASTS = {
 
 export default function EmployeeInfo({ userMeta }: { userMeta: UserMeta }) {
   const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState<UserMeta>(userMeta)
   const toast = useToast()
 
   const onFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
@@ -43,6 +44,7 @@ export default function EmployeeInfo({ userMeta }: { userMeta: UserMeta }) {
     const userMetaCreated = await upsertUserMeta(body)
     if (userMetaCreated) {
       toast(TOASTS.success)
+      setUser(body)
       e.target.reset()
     } else {
       toast(TOASTS.error)
@@ -60,22 +62,18 @@ export default function EmployeeInfo({ userMeta }: { userMeta: UserMeta }) {
             <Input
               type="text"
               name="name"
-              value={userMeta?.name}
-              defaultValue={userMeta?.name}
+              value={user?.name}
+              defaultValue={user?.name}
             />
           </FormGroup>
           <FormGroup label="Email address">
-            <Input type="email" name="email" defaultValue={userMeta?.email} />
+            <Input type="email" name="email" defaultValue={user?.email} />
           </FormGroup>
           <FormGroup label="Phone number">
-            <Input type="tel" name="phone" defaultValue={userMeta?.phone} />
+            <Input type="tel" name="phone" defaultValue={user?.phone} />
           </FormGroup>
           <FormGroup label="Address">
-            <Input
-              type="text"
-              name="address"
-              defaultValue={userMeta?.address}
-            />
+            <Input type="text" name="address" defaultValue={user?.address} />
           </FormGroup>
           <Button type="submit">Save Info</Button>
         </form>

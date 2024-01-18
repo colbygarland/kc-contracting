@@ -92,7 +92,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                   <div
                     className={`${cellBackground(
                       ticket.status,
-                    )} cursor-pointer`}
+                    )} cursor-pointer p-4`}
                     onClick={() => {
                       handleOnClick(ticket)
                     }}
@@ -103,6 +103,11 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                     <div>
                       <strong>Date:</strong> {ticket.ticketDate}
                     </div>
+                    {ticket.rejectedAt && (
+                      <div>
+                        <strong>Rejected</strong>
+                      </div>
+                    )}
                   </div>
                 </ListItem>
               ))}
