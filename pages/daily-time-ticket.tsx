@@ -356,7 +356,7 @@ export default function EnterHours({
             editTicket={editTicket}
           />
         ))}
-        <div className="mb-4 pb-6 border-b border-b-slate-200">
+        <div className="mb-4 pb-6 border-b border-b-slate-200 dark:border-b-slate-600">
           <Button onClick={addLocation}>+ Add Location</Button>
         </div>
         {equipment.map((equipment, index) => (
@@ -369,7 +369,7 @@ export default function EnterHours({
             editTicket={editTicket}
           />
         ))}
-        <div className="mb-4 pb-6 border-b border-b-slate-200">
+        <div className="mb-4 pb-6 border-b border-b-slate-200 dark:border-b-slate-600">
           <Button onClick={addEquipment}>+ Add Equipment</Button>
         </div>
         <div className="grid md:grid-cols-2 md:gap-6">
