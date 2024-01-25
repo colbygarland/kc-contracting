@@ -167,14 +167,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                 <TicketDetails currentTicket={currentTicket!} />
               </ModalBody>
               <ModalFooter>
-                {!currentTicket?.approvedAt && (
-                  <Link href={`/daily-time-ticket?id=${currentTicket?.id}`}>
-                    <Button colorScheme="green" mr={4}>
-                      Update Ticket
-                    </Button>
-                  </Link>
-                )}
-                <Button colorScheme="blue" variant="outline" onClick={onClose}>
+                <Button colorScheme="blue" onClick={onClose}>
                   Close
                 </Button>
               </ModalFooter>
