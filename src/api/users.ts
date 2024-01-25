@@ -9,6 +9,7 @@ export type UserMeta = {
   address?: string
   disabledAt: string | null
   lastActive?: number | null
+  id?: string
 }
 
 const PATH = 'user_meta'

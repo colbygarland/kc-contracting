@@ -58,10 +58,14 @@ const MenuItems = () => {
       {adminUser && (
         <AppMenuItem to="/approve-tickets">Approve Tickets</AppMenuItem>
       )}
+      {adminUser && (
+        <AppMenuItem to="/export-tickets">Export Tickets</AppMenuItem>
+      )}
       <AppMenuItem to="/tickets">View Tickets</AppMenuItem>
       <div className="text-slate-300 dark:text-slate-600 uppercase text-xs font-bold pl-6 mt-6 mb-2">
         Info
       </div>
+
       <AppMenuItem to="/safety-sheets">Safety Sheet</AppMenuItem>
       {adminUser && (
         <>
@@ -96,6 +100,12 @@ const AppMenu = ({ isOpen, onClose }: { isOpen: any; onClose: any }) => {
 
 const UserButton = () => {
   const { colorMode, setColorMode } = useColorMode()
+  const session = useSession()
+  const adminUser = isAdmin(session?.data?.user?.email)
+
+  const toggleColorMode = () => {
+    setColorMode(colorMode === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <Menu>
