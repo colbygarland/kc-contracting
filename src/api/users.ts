@@ -7,6 +7,8 @@ export type UserMeta = {
   name: string
   phone?: string
   address?: string
+  disabledAt: string | null
+  lastActive?: number | null
 }
 
 const PATH = 'user_meta'

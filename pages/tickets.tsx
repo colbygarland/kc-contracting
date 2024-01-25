@@ -92,7 +92,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                   <div
                     className={`${cellBackground(
                       ticket.status,
-                    )} cursor-pointer`}
+                    )} cursor-pointer p-4`}
                     onClick={() => {
                       handleOnClick(ticket)
                     }}
@@ -103,6 +103,11 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                     <div>
                       <strong>Date:</strong> {ticket.ticketDate}
                     </div>
+                    {ticket.rejectedAt && (
+                      <div>
+                        <strong>Rejected</strong>
+                      </div>
+                    )}
                   </div>
                 </ListItem>
               ))}
@@ -162,14 +167,7 @@ export default function Tickets({ tickets }: { tickets: Array<Ticket> }) {
                 <TicketDetails currentTicket={currentTicket!} />
               </ModalBody>
               <ModalFooter>
-                {!currentTicket?.approvedAt && (
-                  <Link href={`/daily-time-ticket?id=${currentTicket?.id}`}>
-                    <Button colorScheme="green" mr={4}>
-                      Update Ticket
-                    </Button>
-                  </Link>
-                )}
-                <Button colorScheme="blue" variant="outline" onClick={onClose}>
+                <Button colorScheme="blue" onClick={onClose}>
                   Close
                 </Button>
               </ModalFooter>

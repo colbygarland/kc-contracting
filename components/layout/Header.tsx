@@ -152,7 +152,9 @@ const Mobile = () => {
             >
               <FaBars className="text-slate-600 dark:text-slate-50 text-2xl" />
             </Button>
-            <Text fontWeight="bold">{CONSTANTS.APP_NAME}</Text>
+            <Link href="/">
+              <Text fontWeight="bold">{CONSTANTS.APP_NAME}</Text>
+            </Link>
             <UserButton />
           </Flex>
         </Container>

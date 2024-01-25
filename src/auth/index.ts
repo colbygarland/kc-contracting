@@ -7,6 +7,7 @@ import {
 } from 'firebase/auth'
 import { signIn } from 'next-auth/react'
 import { set } from '../utils/persist'
+import { toTimestamp } from '../utils/date'
 
 export const createUser = async (
   email: string,
@@ -30,6 +31,7 @@ export const createUser = async (
       name,
       email,
       phone,
+      lastActive: toTimestamp(new Date()),
     })
     return { user: resp.user, error: { code: null, message: null } }
   } catch (error: any) {
