@@ -1,4 +1,5 @@
 import { initFirebase } from '@/firebase'
+import { updateUserLastActive } from '@/src/api/users'
 import { loginUser } from '@/src/auth'
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
@@ -36,6 +37,7 @@ export default NextAuth({
 
         // If no error and we have user data, return it
         if (user) {
+          await updateUserLastActive(credentials!.username)
           return user
         }
         // Return null if user data could not be retrieved
