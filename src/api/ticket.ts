@@ -163,8 +163,8 @@ export const getTicket = async (ticket: Ticket): Promise<Ticket | null> => {
       getUserMeta(t.email as string),
     ])
     t.company = company?.name
-    t.truck = truck?.name
-    t.trailer = trailer?.name
+    t.truck = truck?.name ?? ''
+    t.trailer = trailer?.name ?? ''
     t.name = userMeta?.name
     t.phone = userMeta?.phone
 
