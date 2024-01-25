@@ -189,24 +189,19 @@ export const getAllTickets = async (email?: string): Promise<Array<Ticket>> => {
       tickets = flattenObject(tickets)
     }
 
-    const ticketsAsArray = objectToArray<Ticket>(
+    let ticketsAsArray = objectToArray<Ticket>(
       tickets,
       'ticketNumber',
       'number',
     )
 
-    let index = 0
+    const promisesToRun = []
     for (const ticket of ticketsAsArray) {
-      const comp = await getCompany(ticket.company)
-      ticketsAsArray[index].company = comp?.name || '-'
-      ticketsAsArray[index].status = ticket.approvedAt
-        ? 'approved'
-        : ticket.rejectedAt
-        ? 'rejected'
-        : 'pending'
-
-      index++
+      promisesToRun.push(getTicket(ticket))
     }
+
+    // @ts-ignore
+    ticketsAsArray = await Promise.all(promisesToRun)
 
     return ticketsAsArray
   } catch (error) {

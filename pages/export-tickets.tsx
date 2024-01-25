@@ -18,8 +18,8 @@ import { Ticket, getAllTickets } from '@/src/api/ticket'
 import { UserMeta, getAllUserMeta } from '@/src/api/users'
 import { formatDate } from '@/src/utils/date'
 import { Loader } from '@/components/Loader'
-import download from 'downloadjs'
-import { createPDF } from '@/src/utils/pdf'
+import { PDFTicket } from '@/components/PDFTicket'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 
 export default function ExportTickets({
   employees,
@@ -31,7 +31,7 @@ export default function ExportTickets({
   const [emptyMessage, setEmptyMessage] = useState(
     'Select a date range to export tickets.',
   )
-  const [dates, setDates] = useState<Record<string, Date | null>>({
+  const [dates, setDates] = useState<Record<string, string | null>>({
     startDate: null,
     endDate: null,
   })
@@ -57,8 +57,8 @@ export default function ExportTickets({
     const end = new Date(formJson['end_date'] as string)
     // set the dates to be used later by the export button
     setDates({
-      startDate: start,
-      endDate: end,
+      startDate: formatDate(start!),
+      endDate: formatDate(end!),
     })
     const filteredTickets = allTickets.filter(ticket => {
       const dateCheck = formatDate(new Date(ticket.ticketDate))
@@ -85,39 +85,34 @@ export default function ExportTickets({
     setLoading(false)
   }
 
-  const exportTickets = async () => {
-    const start = formatDate(dates!.startDate!)
-    const end = formatDate(dates!.endDate!)
-    const pdf = await createPDF(tickets, start, end)
-    download(pdf, `tickets-${start}-${end}.pdf`, 'application/pdf')
-  }
-
   return (
     <Page title="Export Tickets">
       {loading && <Loader />}
       <div className="lg:grid grid-cols-3 gap-10">
         <div className="col-span-2">
           {tickets.length > 0 ? (
-            <TableContainer>
-              <Table layout="fixed">
-                <Thead>
-                  <Tr>
-                    <Th>Ticket Number</Th>
-                    <Th>Date</Th>
-                    <Th>Company</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {tickets.map(ticket => (
-                    <Tr key={ticket.id}>
-                      <Td>{ticket.ticketNumber}</Td>
-                      <Td>{ticket.ticketDate}</Td>
-                      <Td>{ticket.company}</Td>
+            <>
+              <TableContainer>
+                <Table layout="fixed">
+                  <Thead>
+                    <Tr>
+                      <Th>Ticket Number</Th>
+                      <Th>Date</Th>
+                      <Th>Company</Th>
                     </Tr>
-                  ))}
-                </Tbody>
-              </Table>
-            </TableContainer>
+                  </Thead>
+                  <Tbody>
+                    {tickets.map(ticket => (
+                      <Tr key={ticket.id}>
+                        <Td>{ticket.ticketNumber}</Td>
+                        <Td>{ticket.ticketDate}</Td>
+                        <Td>{ticket.company}</Td>
+                      </Tr>
+                    ))}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </>
           ) : (
             emptyMessage
           )}
@@ -155,12 +150,15 @@ export default function ExportTickets({
                 Submit
               </Button>
               {tickets.length > 0 && (
-                <Button
-                  type="button"
-                  colorScheme="blue"
-                  onClick={exportTickets}
-                >
-                  Export Tickets
+                <Button colorScheme="blue">
+                  <PDFDownloadLink
+                    document={<PDFTicket tickets={tickets} />}
+                    fileName={`tickets-${dates.startDate}-${dates.endDate}.pdf`}
+                  >
+                    {({ blob, url, loading, error }) =>
+                      loading ? 'Loading document...' : 'Export'
+                    }
+                  </PDFDownloadLink>
                 </Button>
               )}
             </ButtonGroup>
