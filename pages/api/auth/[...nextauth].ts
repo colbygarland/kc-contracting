@@ -37,7 +37,7 @@ export default NextAuth({
 
         // If no error and we have user data, return it
         if (user) {
-          await updateUserLastActive(credentials!.username)
+          // await updateUserLastActive(credentials!.username)
           return user
         }
         // Return null if user data could not be retrieved
