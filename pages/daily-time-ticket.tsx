@@ -34,6 +34,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { MdRemoveCircle } from 'react-icons/md'
+import { toast } from 'sonner'
 
 const CHARGE_TO: Array<ChargeType> = ['PO #', 'LSD', 'Job #']
 
@@ -176,7 +177,6 @@ export default function EnterHours({
   editTicket?: Ticket
 }) {
   const session = useSession()
-  const toast = useToast()
   const [loading, setLoading] = useState(false)
   const [locations, setLocations] = useState([Location])
   const [equipment, setEquipment] = useState([Equipment])
@@ -279,14 +279,11 @@ export default function EnterHours({
       rejectionReason: '',
     }
 
-    const ticketCreated = await createTicket(body)
-    if (ticketCreated) {
-      toast(TOASTS.success)
-      e.target.reset()
-      scrollTo(0, 0)
-    } else {
-      toast(TOASTS.error)
-    }
+    toast.promise(createTicket(body), {
+      loading: 'Loading...',
+      success: 'Ticket created!',
+      error: 'Something went wrong.',
+    })
 
     setLoading(false)
   }
