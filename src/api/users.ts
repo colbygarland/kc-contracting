@@ -1,5 +1,6 @@
 import { getFromDatabase, writeToDatabase } from '.'
 import { objectToArray } from '../utils/arrays'
+import { toTimestamp } from '../utils/date'
 import { encodeEmail } from '../utils/strings'
 
 export type UserMeta = {
@@ -18,6 +19,24 @@ export const upsertUserMeta = async (user: UserMeta): Promise<boolean> => {
   const id = encodeEmail(user.email)
   try {
     await writeToDatabase({ data: user, path: PATH, id })
+    return true
+  } catch (error) {
+    console.error(`Error upserting user meta. Error: ${error}`)
+    return false
+  }
+}
+
+export const updateUserLastActive = async (email: string): Promise<boolean> => {
+  const id = encodeEmail(email)
+  try {
+    await writeToDatabase({
+      data: {
+        lastActive: toTimestamp(new Date()),
+      },
+      path: PATH,
+      id,
+      forceUpdate: true,
+    })
     return true
   } catch (error) {
     console.error(`Error upserting user meta. Error: ${error}`)
