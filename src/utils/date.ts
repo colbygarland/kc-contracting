@@ -31,3 +31,7 @@ export const fromTimestamp = (timestamp: number | string | undefined) => {
   }
   return new Date(timestamp).toLocaleString().split(',')[0]
 }
+
+export const fromTimestampWithTime = (timestamp: number) => {
+  return new Date(timestamp).toLocaleString()
+}

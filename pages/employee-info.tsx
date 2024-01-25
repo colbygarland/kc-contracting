@@ -2,6 +2,7 @@ import { Loader } from '@/components/Loader'
 import { FormGroup } from '@/components/forms/FormGroup'
 import { Page } from '@/components/layout/Page'
 import { UserMeta, getUserMeta, upsertUserMeta } from '@/src/api/users'
+import { toTimestamp } from '@/src/utils/date'
 import { Button, Input, useToast } from '@chakra-ui/react'
 import { getServerSession } from 'next-auth'
 import { ChangeEvent, useState } from 'react'
@@ -39,6 +40,8 @@ export default function EmployeeInfo({ userMeta }: { userMeta: UserMeta }) {
       name: formJson['name'] as string,
       phone: formJson['phone'] as string,
       address: formJson['address'] as string,
+      disabledAt: null,
+      lastActive: toTimestamp(new Date()),
     }
 
     const userMetaCreated = await upsertUserMeta(body)
